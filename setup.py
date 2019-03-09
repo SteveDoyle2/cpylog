@@ -19,6 +19,8 @@ if PY3:
         sys.exit('Upgrade your Python to >= 2.7.7 or 3.5+; version=(%s.%s.%s)' % (imajor, minor1, minor2))
 
 
+packages = find_packages() # exclude=['ez_setup', 'examples', 'tests'] + exclude_words
+
 # set up all icons
 import cpylog
 setup(
@@ -40,9 +42,10 @@ setup(
     author_email=cpylog.__email__,
     url=cpylog.__website__,
     license=cpylog.__license__,
-    packages=['six'],
+    packages=packages,
     include_package_data=True,
     zip_safe=False,
+    install_requires=['six'],
     #{'': ['license.txt']}
     #package_data={'': ['*.png']},
     #data_files=[(icon_path, icon_files2)],
