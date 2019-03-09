@@ -7,7 +7,15 @@ import sys
 import platform
 import os
 from six import PY2, string_types
-from pyNastran.utils import ipython_info
+
+__version__ = '1.0'
+__desc__ = 'cpylog'
+__long__ = __desc__
+__website__ = 'https://github.com/cpylog/cpylog'
+__license__ = 'BSD-3'
+__author__ = ''
+__email__ = ''
+
 
 IS_TERMINAL = False
 if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this
@@ -21,6 +29,19 @@ try:
     #IS_COLORAMA = False
 except ImportError:
     IS_COLORAMA = False
+
+def ipython_info():
+    # type: () -> Optional[str]
+    """determines if iPython/Jupyter notebook is running"""
+    try:
+        return get_ipython()
+    except NameError:
+        return None
+    #if 'ipykernel' in sys.modules:
+        #ip = 'notebook'
+    #elif 'Ipython' in sys.modules:
+        #ip = 'terminal'
+    #return ip
 
 USE_HTML = ipython_info() is not None
 USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
@@ -374,18 +395,6 @@ def write_error(msg):
     """writes an error message"""
     sys.stdout.write(Fore.RED + msg)
 
-def ipython_info():
-    # type: () -> Optional[str]
-    """determines if iPython/Jupyter notebook is running"""
-    try:
-        return get_ipython()
-    except NameError:
-        return None
-    #if 'ipykernel' in sys.modules:
-        #ip = 'notebook'
-    #elif 'Ipython' in sys.modules:
-        #ip = 'terminal'
-    #return ip
 
 if __name__ == '__main__':  # pragma: no cover
     # how to use a simple logger
