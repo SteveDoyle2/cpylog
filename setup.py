@@ -40,7 +40,7 @@ setup(
     author_email=cpylog.__email__,
     url=cpylog.__website__,
     license=cpylog.__license__,
-    packages=[],
+    packages=['six'],
     include_package_data=True,
     zip_safe=False,
     #{'': ['license.txt']}
