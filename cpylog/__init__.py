@@ -8,7 +8,7 @@ import platform
 import os
 from six import PY2, string_types
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
