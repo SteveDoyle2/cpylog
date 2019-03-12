@@ -5,7 +5,6 @@
 language: python
 python:
   - "2.7"
-  - "3.5"
   - "3.6"
   #- "3.7"     # no travis build yet (2018/8/19)
   #  # https://github.com/travis-ci/travis-ci/issues/9815
@@ -66,7 +65,6 @@ install:
   - echo "python version=$TRAVIS_PYTHON_VERSION"
 
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]];     then conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]];     then conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]];     then conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]];     then conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "nightly" ]]; then conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION; fi
@@ -79,7 +77,6 @@ install:
 script:
   #- nosetests --with-cov --cov YOUR_PACKAGE_NAME_HERE --cov-config .coveragerc --logging-level=INFO
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]];     then coverage run cpylog/test_log.py; fi
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]];     then python cpylog/test_log.py; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]];     then python cpylog/test_log.py; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "3.7" ]];     then python cpylog/test_log.py; fi
   - if [[ "$TRAVIS_PYTHON_VERSION" == "nightly" ]]; then python cpylog/test_log.py; fi

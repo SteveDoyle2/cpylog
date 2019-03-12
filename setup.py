@@ -21,7 +21,23 @@ if PY3:
 
 packages = find_packages() # exclude=['ez_setup', 'examples', 'tests'] + exclude_words
 
-# set up all icons
+#is_dev = (
+    #'TRAVIS' in os.environ or
+    #'APPVEYOR' in os.environ or
+    #'READTHEDOCS' in os.environ
+#)
+is_travis = 'TRAVIS' in os.environ
+#is_rtd = 'READTHEDOCS' in os.environ
+
+install_requires = []
+is_windows = 'nt' in os.name
+if is_travis and not is_windows:
+    install_requires.append('python-coveralls')
+    #py_packages.append('codecov')
+    #py_packages.append('coverage')
+
+
+# get package metadata
 import cpylog
 setup(
     name='cpylog',
@@ -45,7 +61,7 @@ setup(
     packages=packages,
     include_package_data=True,
     zip_safe=False,
-    #install_requires=[],
+    install_requires=install_requires,
     #{'': ['license.txt']}
     #package_data={'': ['*.png']},
     #data_files=[(icon_path, icon_files2)],
