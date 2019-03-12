@@ -6,7 +6,6 @@ from __future__ import print_function, unicode_literals
 import sys
 import platform
 import os
-from six import PY2, string_types
 
 __version__ = '1.0.2'
 __desc__ = 'cpylog'
@@ -16,6 +15,11 @@ __license__ = 'BSD-3'
 __author__ = ''
 __email__ = ''
 
+PY2 = sys.version_info[0] == 2
+if PY2:
+    string_types = basestring,
+else:
+    string_types = str,
 
 IS_TERMINAL = False
 if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this

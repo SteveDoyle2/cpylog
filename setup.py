@@ -27,8 +27,7 @@ setup(
     name='cpylog',
     version=cpylog.__version__,
     description=cpylog.__desc__,
-    long_description="""\
-""",
+    long_description=cpylog.__long__,
     classifiers=[
         'Natural Language :: English',
         'Intended Audience :: Science/Research',
@@ -46,7 +45,7 @@ setup(
     packages=packages,
     include_package_data=True,
     zip_safe=False,
-    install_requires=['six'],
+    #install_requires=[],
     #{'': ['license.txt']}
     #package_data={'': ['*.png']},
     #data_files=[(icon_path, icon_files2)],
@@ -62,4 +61,3 @@ setup(
     },
     test_suite='cpylog.test_log',
 )
-
