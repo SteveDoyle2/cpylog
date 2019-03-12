@@ -2,7 +2,7 @@
 import os
 import unittest
 
-from cpylog import make_log, SimpleLogger, get_logger, get_logger2
+from cpylog import SimpleLogger, get_logger, get_logger2
 
 class TestLog(unittest.TestCase):
     def test_simple_logger(self):
@@ -54,10 +54,6 @@ class TestLog(unittest.TestCase):
         with self.assertRaises(NameError):
             log.bad('bad')
 
-    def test_make_log(self):
-        """tests make_log"""
-        make_log()
-        os.remove('pyNastran.log')
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
