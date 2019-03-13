@@ -12,7 +12,9 @@ python:
   #  sudo: true
 #  - "3.5-dev" # 3.5 development branch
 #  - "nightly" # currently points to 3.6-dev
-
+dist: xenial
+language: python
+python: 3.7
 #-------------------------------------------------
 # old-A
 
