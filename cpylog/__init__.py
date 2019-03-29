@@ -6,8 +6,9 @@ from __future__ import print_function, unicode_literals
 import sys
 import platform
 import os
+from .utils import ipython_info, properties
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -21,41 +22,29 @@ if PY2:
 else:
     string_types = str,
 
+# terminal is False if we're piping to a file
 IS_TERMINAL = False
 if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this
     IS_TERMINAL = sys.stdout.isatty()
 
-# You're running in a real terminal
-try:
-    from colorama import init as colorinit, Fore  # type: ignore
-    colorinit(autoreset=True)
-    IS_COLORAMA = True
-    #IS_COLORAMA = False
-except ImportError:
-    IS_COLORAMA = False
-
-def ipython_info():
-    # type: () -> Optional[str]
-    """determines if iPython/Jupyter notebook is running"""
-    try:
-        return get_ipython()
-    except NameError:
-        return None
-    #if 'ipykernel' in sys.modules:
-        #ip = 'notebook'
-    #elif 'Ipython' in sys.modules:
-        #ip = 'terminal'
-    #return ip
-
 USE_HTML = ipython_info() is not None
-USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
-#print('USE_COLORAMA =', USE_COLORAMA, IS_COLORAMA, IS_TERMINAL, ipython_info())
+USE_COLORAMA = IS_TERMINAL and not USE_HTML
+if USE_COLORAMA:
+    # You're running in a real terminal
+    try:
+        from colorama import init as colorinit, Fore  # type: ignore
+        colorinit(autoreset=True)
+        IS_COLORAMA = True
+    except ImportError:
+        IS_COLORAMA = False
+    USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
+    #print('USE_COLORAMA =', USE_COLORAMA, IS_COLORAMA, IS_TERMINAL, ipython_info())
 #print('USE_HTML =', USE_HTML)
 
 
 if USE_COLORAMA:
-    # if we're writing to a file
     def _write(typ, name, msg, encoding):
+        """if we're writing to the screen"""
         try:
             _write_colorama_screen(typ, name + msg)
         except IOError:
@@ -82,6 +71,7 @@ elif USE_HTML:
         display(HTML("<text style=color:{0}>{1}</text>".format(color, name + msg)))
 else:
     def _write(typ, name, msg, encoding):
+        """writing to the screen"""
         if PY2:
             sys.stdout.write((name + msg).encode(encoding)
                              if typ else msg.encode(encoding))
@@ -103,13 +93,12 @@ class SimpleLogger(object):
       This is really only an issue when calling logging multiple times,
       such as in an optimization loop or testing.
     """
-
     def __init__(self, level='debug', encoding='utf-8', log_func=None):
         """
         Parameters
         ----------
         level : str
-            level of logging: 'info' or 'debug'
+            level of logging: 'info', 'debug', 'warning', 'error', or 'critical'
         encoding : str; default='utf-8'
             the unicode encoding method
         log_func : log
@@ -133,7 +122,7 @@ class SimpleLogger(object):
         Parameters
         ----------
         typ : str
-            message type - ['DEBUG', 'INFO', 'WARNING', 'ERROR']
+            message type - ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
         filename : str
             the active file
         lineno : int
@@ -234,7 +223,7 @@ class SimpleLogger(object):
         msg : str
             message to be logged
         """
-        if self.level in ('error', 'critical', ):
+        if self.level in ('error', 'critical'):
             return
         assert msg is not None, msg
         self.msg_typ('ERROR', msg)
@@ -266,32 +255,6 @@ class SimpleLogger(object):
     def __repr__(self):
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
 
-
-def properties(nframe=3):
-    """
-    Gets frame information
-
-    Parameters
-    ----------
-    nframe : int; default=3
-        the number of frames to jump back
-        0 = current
-        2 = calling from an embedded function (e.g., log_msg)
-        3 = calling from an embedded class (e.g., SimpleLogger)
-
-    Returns
-    -------
-    line number : int
-        the line number of the nth frame
-    filename : str
-        the filen ame of the nth frame
-    """
-    # jump to get out of the logger code
-    frame = sys._getframe(nframe)
-    active_file = os.path.basename(frame.f_globals['__file__'])
-    if active_file.endswith('.pyc'):
-        return frame.f_lineno, active_file[:-1]
-    return frame.f_lineno, active_file
 
 def get_logger(log=None, level='debug', encoding='utf-8'):
     """
@@ -350,7 +313,7 @@ def _write_colorama_screen(typ, msg):
     Parameters
     ----------
     typ : str
-        messeage type - ['DEBUG', 'INFO', 'WARNING', 'ERROR']
+        messeage type - ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
     msg : str
         message to be displayed
     """
@@ -386,4 +349,3 @@ if __name__ == '__main__':  # pragma: no cover
         test_log.warning('warning')
         test_log.error('errors')
         test_log.exception('exception')
-    make_log()
