@@ -270,6 +270,7 @@ def get_logger(log=None, level='debug', encoding='utf-8'):
     encoding : str; default='utf-8'
         the unicode encoding method
     """
+    assert not isinstance(log, string_types), log
     return SimpleLogger(level, encoding=encoding) if log is None else log
 
 
