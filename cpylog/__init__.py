@@ -8,7 +8,7 @@ import platform
 import os
 from .utils import ipython_info, properties
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -82,8 +82,13 @@ else:
 class SimpleLogger(object):
     """
     Simple logger object. In future might be changed to use Python logging module.
-    Two levels are supported: 'debug' and 'info'. Info level discards debug
-    messages, 'debug' level displays all messages.
+    Four levels are supported:
+      - 'debug'
+      - 'info'
+      - 'warning'
+      - 'error'
+      - 'critical'
+    'debug' prints all messages.  'info' removes only 'debug' messages, etc.
 
     .. note:: Logging module is currently not supported because I don't
       know how to repoint the log file if the program is called a second
