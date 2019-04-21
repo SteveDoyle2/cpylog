@@ -3,48 +3,35 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyatmos's documentation for Master!
+Welcome to cpylog's documentation for Master!
 ==============================================
-The pyatmos software is a atmospheric properties library that produces reasonable
-atmospheric properties up to 500,000 feet.  This goes far beyond the 1976 standard
-atmosphere's limit of ~80,000 feet and is suitable for reentery problems.
+The cpylog software is a replacement for the standard Python logging module.
+It contains a limited, but simple pure Python colorama/HTML capable logger.
 
-Additionally, mixed units are supported.  
+It's **limited** in that:
+ - no handlers
+ - no file writing
 
-Altitudes may be input in:
- - m, meters
- - ft, feet
- - kft, kilofeet
+As a **bonus** (limitation?), it crashes when you have invalid logging statement.
 
-Velocities are in units of:
- - m/s
- - feet/s
- - knots
+The **additional** features that the logger has:
+ - support for colorama highlighting
+ - HTML support for the Jupyter notebook
+ - overwritable log functions in order to integrate the log with a GUI
 
-Densities are in units of:
- - kg/m^3
- - slug/ft^3
- - slinch/in^3
+One of the goals of this logging class is that because it implements a subset of standard Python logging,
+you can replace it with a standard Python log.
 
-The following properties may be calculated:
- - pressure
- - temperature
- - density
- - dynamic pressure
- - speed of sound
- - equivalent airspeed
- - Reynolds number/unit length
- - dynamic viscosity
- - kinematic viscosity
-
-Additionally, there is some support for vectorization with numpy.
 
 .. toctree::
 
-   reference/pyatmos.utils
-   reference/pyatmos.utils.atmosphere
-   reference/pyatmos.utils.atmosphere_vectorized
-   reference/pyatmos.utils.sweep
+   reference/cpylog
+   reference/modules
+
+..   reference/pyatmos.utils
+..   reference/pyatmos.utils.atmosphere
+..   reference/pyatmos.utils.atmosphere_vectorized
+..   reference/pyatmos.utils.sweep
 ..   manual/index
 
 

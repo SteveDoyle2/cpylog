@@ -35,7 +35,7 @@ python makeIndex.py
 
 
 # does the same thing...
-sphinx-apidoc -o output ../pyatmos
+sphinx-apidoc -o output ../cpylog
 
 
 # final command

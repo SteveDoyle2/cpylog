@@ -19,7 +19,7 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 cwd = os.getcwd()
 if on_rtd:
-    pkg_path = os.path.join(os.path.dirname(cwd), 'pyatmos')
+    pkg_path = os.path.join(os.path.dirname(cwd), 'cpylog')
 else:
     import pyatmos
     pkg_path = pyatmos.__path__[0]
@@ -31,9 +31,6 @@ sys.stdout.flush()
 sys.path.append(os.path.dirname(cwd))
 sys.path.append(os.path.dirname(pkg_path))
 sys.path.append(pkg_path)
-#sys.path.append(os.path.join(pkg_path, 'bdf'))
-#sys.path.append(os.path.join(pkg_path, 'op2'))
-#sys.path.append(os.path.join(pkg_path, 'f06'))
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -49,8 +46,8 @@ MOCK_MODULES = [
     #'PySide',
     'numpy.distutils.core',
     'numpy.distutils',
-    'matplotlib',
-    'wx',
+    #'matplotlib',
+    #'wx',
     #'vtk', 'PyQt4', 'PySide',
     #'docopt',
     #'numpydoc',
@@ -193,12 +190,12 @@ master_doc = 'index'
 # built documents.
 #
 # The short X.Y version.
-version = u'1.0-dev'
+version = u'1.0'
 # The full version, including alpha/beta/rc tags.
-release = u'1.0-dev'
+release = u'1.0'
 
 # General information about the project.
-project = u'pyatmos' + u' ' + version
+project = u'cpylog' + u' ' + version
 author = u'Steven Doyle'
 copyright = u'2019, ' + author
 
@@ -361,7 +358,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pyatmosdoc'
+htmlhelp_basename = 'cpylogdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -412,7 +409,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'pyatmos', u'pyatmos Documentation',
+    (master_doc, 'cpylog', u'cpylog Documentation',
      [author], 1)
 ]
 
@@ -426,8 +423,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pyatmos', u'pyatmos Documentation',
-     author, 'pyatmos', 'High altitude atmosphere library', 'Miscellaneous'),
+    (master_doc, 'cpylog', u'cpylog Documentation',
+     author, 'cpylog', 'A simple pure python colorama/HTML capable logger', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -443,9 +440,9 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'pyatmos'
+epub_title = u'cpylog'
 epub_author = u'Steven Doyle'
-epub_publisher = u'pyatmos'
+epub_publisher = u'cpylog'
 epub_copyright = u'2019, Steven Doyle'
 
 # The language of the text. It defaults to the language option
