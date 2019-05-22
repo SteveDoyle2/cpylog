@@ -2,9 +2,9 @@
 from __future__ import print_function, unicode_literals
 import sys
 import os
+from typing import Optional
 
-def ipython_info():
-    # type: () -> Optional[str]
+def ipython_info() -> Optional[str]:
     """determines if iPython/Jupyter notebook is running"""
     try:
         return get_ipython()
@@ -17,7 +17,7 @@ def ipython_info():
     #return ip
 
 
-def properties(nframe=3):
+def properties(nframe: int=3) -> Any:
     """
     Gets frame information
 

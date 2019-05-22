@@ -1,6 +1,4 @@
-"""
-defines a colorama log
-"""
+"""defines a colorama log"""
 # coding: utf-8
 from __future__ import print_function, unicode_literals
 import sys
@@ -15,12 +13,6 @@ __website__ = 'https://github.com/cpylog/cpylog'
 __license__ = 'BSD-3'
 __author__ = ''
 __email__ = ''
-
-PY2 = sys.version_info[0] == 2
-if PY2:
-    string_types = basestring,
-else:
-    string_types = str,
 
 # terminal is False if we're piping to a file
 IS_TERMINAL = False
@@ -72,11 +64,7 @@ elif USE_HTML:
 else:
     def _write(typ, name, msg, encoding):
         """writing to the screen"""
-        if PY2:
-            sys.stdout.write((name + msg).encode(encoding)
-                             if typ else msg.encode(encoding))
-        else:
-            sys.stdout.write((name + msg) if typ else msg)
+        sys.stdout.write((name + msg) if typ else msg)
 
 
 class SimpleLogger(object):
@@ -97,6 +85,7 @@ class SimpleLogger(object):
         2) all logging going to one file\n
       This is really only an issue when calling logging multiple times,
       such as in an optimization loop or testing.
+
     """
     def __init__(self, level='debug', encoding='utf-8', log_func=None):
         """
@@ -110,6 +99,7 @@ class SimpleLogger(object):
           funtion that will be used to print log. It should take one argument:
           string that is produces by a logger. Default: print messages to
           stderr using @see stderr_logging function.
+
         """
         if log_func is None:
             log_func = self.stdout_logging
@@ -118,7 +108,7 @@ class SimpleLogger(object):
         self.level = level
         self.log_func = log_func
         self.encoding = encoding
-        assert isinstance(encoding, string_types), type(encoding)
+        assert isinstance(encoding, str), type(encoding)
 
     def stdout_logging(self, typ, filename, lineno, msg):
         """
@@ -136,6 +126,7 @@ class SimpleLogger(object):
             message to be displayed
 
         Message will have format 'typ: msg'
+
         """
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
@@ -155,6 +146,7 @@ class SimpleLogger(object):
             type of a message (e.g. INFO)
         msg : str
             message to be logged
+
         """
         n, filename = properties()
         self.log_func(typ, filename, n, msg)
@@ -170,6 +162,7 @@ class SimpleLogger(object):
             message to be looged without any alteration.
         typ : str
             type of a message (e.g. INFO)
+
         """
         frame = sys._getframe(2)  # jump to get out of the logger code
         lineno = frame.f_lineno
@@ -186,6 +179,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         if self.level != 'debug':
             return
@@ -199,6 +193,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         if self.level not in ('debug', 'info'):
             return
@@ -213,6 +208,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         if self.level in ('error', 'critical'):
             return
@@ -227,6 +223,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         if self.level in ('error', 'critical'):
             return
@@ -241,6 +238,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         assert msg is not None, msg
         self.msg_typ('EXCEPTION', msg)
@@ -253,6 +251,7 @@ class SimpleLogger(object):
         ----------
         msg : str
             message to be logged
+
         """
         assert msg is not None, msg
         self.msg_typ('CRITICAL', msg)
@@ -274,8 +273,9 @@ def get_logger(log=None, level='debug', encoding='utf-8'):
         level of logging: 'info' or 'debug'
     encoding : str; default='utf-8'
         the unicode encoding method
+
     """
-    assert not isinstance(log, string_types), log
+    assert not isinstance(log, str), log
     return SimpleLogger(level, encoding=encoding) if log is None else log
 
 
@@ -302,6 +302,7 @@ def get_logger2(log=None, debug=True, encoding='utf-8'):
     -------
     log : log / SimpleLogger
         logging
+
     """
     if log is not None:
         pass
@@ -322,6 +323,7 @@ def _write_colorama_screen(typ, msg):
         messeage type - ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
     msg : str
         message to be displayed
+
     """
     # write to the screen
     #
