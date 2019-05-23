@@ -20,10 +20,7 @@ you can replace it with a standard Python log.
 |  Version  | Docs  | Status |
 | :--- 	  | :--- 	  | :--- 	  |
 |   Master | [![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest) | [![Linux Status](https://img.shields.io/travis/cpylog/cpylog/master.svg)](https://travis-ci.org/cpylog/cpylog) ![Coverage Status](https://coveralls.io/repos/github/cpylog/cpylog/badge.svg?branch=master) | 
-
-
-<!---
-|  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) | [docs] | [![Build Status](https://img.shields.io/travis/cpylog/cpylog/v1.1.svg)](https://travis-ci.org/SteveDoyle2/pyNastran) [![Coverage Status](https://img.shields.io/coveralls/cpylog/cpylog/v1.1.svg)](https://coveralls.io/github/SteveDoyle2/pyNastran?branch=v1.1) |
+|  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) | docs | [![Build Status](https://img.shields.io/travis/cpylog/cpylog/v1.0.svg)](https://travis-ci.org/cpylog/cpylog) [![Coverage Status](https://img.shields.io/coveralls/cpylog/cpylog/v1.0.svg)](https://coveralls.io/github/cpylog/cpylog?branch=v1.0) |
 
 
 <!---
