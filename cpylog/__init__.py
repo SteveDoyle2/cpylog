@@ -5,7 +5,7 @@ import platform
 import os
 from .utils import ipython_info, properties
 
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
