@@ -2,14 +2,9 @@
 import os
 import sys
 from setuptools import setup, find_packages
-#PY2 = False
-#PY3 = True
-#if sys.version_info < (3, 0):
-    #PY2 = True
-    #PY3 = False
 
 imajor, minor1, minor2 = sys.version_info[:3]
-if sys.version_info < (3, 6):  # 2.7.15 used
+if sys.version_info < (3, 6):  # 3.7.1 used
     # makes sure we don't get the following bug:
     #   Issue #19099: The struct module now supports Unicode format strings.
     sys.exit('Upgrade your Python to >= 3.6+; version=(%s.%s.%s)' % (imajor, minor1, minor2))
@@ -28,8 +23,8 @@ is_travis = 'TRAVIS' in os.environ
 install_requires = []
 is_windows = 'nt' in os.name
 if is_travis and not is_windows:
-    install_requires.append('python-coveralls')
-    #py_packages.append('codecov')
+    #install_requires.append('python-coveralls')
+    py_packages.append('codecov')
     #py_packages.append('coverage')
 
 

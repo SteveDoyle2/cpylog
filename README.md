@@ -1,7 +1,7 @@
 # cpylog
 A simple pure python colorama/HTML capable logger
 
-This is a library for creating a llimited pure Python version of the standard logging object,
+This is a library for creating a llimited pure Python (3.6+) version of the standard logging object,
 
 It's **limited** in that:
  - no handlers
