@@ -1,6 +1,5 @@
 """defines a colorama log"""
 # coding: utf-8
-from __future__ import print_function, unicode_literals
 import sys
 import platform
 import os
@@ -266,7 +265,6 @@ def get_logger(log=None, level='debug', encoding='utf-8'):
 
     Parameters
     ----------
-
     log: log / None
          a logger object or None
     level : str
@@ -328,12 +326,7 @@ def _write_colorama_screen(typ, msg):
     # write to the screen
     #
     # Python 3 requires str, not bytes
-    # Python 2 seems to be able to use either
     if typ == 'INFO':
-        #'\033[ 1 m; 34 m'
-        # only works for Python 2
-        #out = (Fore.GREEN + msg).encode(encoding)
-        # seems to work with both
         sys.stdout.write(Fore.GREEN + msg)
     elif typ == 'DEBUG':
         sys.stdout.write(Fore.CYAN + msg)
@@ -350,9 +343,9 @@ def write_error(msg):
 
 if __name__ == '__main__':  # pragma: no cover
     # how to use a simple logger
-    for nam in ['debug', 'info']:
-        #print('--- %s logger ---' % nam)
-        test_log = SimpleLogger(nam, encoding='utf-8')
+    for debug_level in ['debug', 'info']:
+        #print('--- %s logger ---' % debug_level)
+        test_log = SimpleLogger(debug_level, encoding='utf-8')
         test_log.debug('debug message')
         test_log.warning('warning')
         test_log.error('errors')

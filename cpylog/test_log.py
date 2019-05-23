@@ -55,5 +55,5 @@ class TestLog(unittest.TestCase):
             log.bad('bad')
 
 
-if __name__ == "__main__":  # pragma: no cover
+if __name__ == "__main__":
     unittest.main()

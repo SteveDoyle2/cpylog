@@ -2,7 +2,7 @@
 from __future__ import print_function, unicode_literals
 import sys
 import os
-from typing import Optional
+from typing import Optional, Any
 
 def ipython_info() -> Optional[str]:
     """determines if iPython/Jupyter notebook is running"""
