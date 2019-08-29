@@ -1,8 +1,8 @@
 """defines a colorama log"""
 # coding: utf-8
 import sys
-import platform
 import os
+from typing import Optional
 from .utils import ipython_info, properties
 
 __version__ = '1.0.5'
@@ -34,18 +34,18 @@ if USE_COLORAMA:
 
 
 if USE_COLORAMA:
-    def _write(typ, name, msg, encoding):
+    def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """if we're writing to the screen"""
         try:
             _write_colorama_screen(typ, name + msg)
         except IOError:
-            sys.stdout.write('eror writing line...encoding=%r\n' % (encoding))
+            sys.stdout.write('error writing line...encoding=%r\n' % encoding)
             sys.stdout.write(msg)
 
 elif USE_HTML:
     from IPython.core.display import display, HTML
 
-    def _write(typ, name, msg, encoding):
+    def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """
         per:
          - https://stackoverflow.com/questions/16816013/is-it-possible-to-print-using-different-color-in-ipythons-notebook
@@ -61,12 +61,12 @@ elif USE_HTML:
             color = 'red'
         display(HTML("<text style=color:{0}>{1}</text>".format(color, name + msg)))
 else:
-    def _write(typ, name, msg, encoding):
+    def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """writing to the screen"""
         sys.stdout.write((name + msg) if typ else msg)
 
 
-class SimpleLogger(object):
+class SimpleLogger:
     """
     Simple logger object. In future might be changed to use Python logging module.
     Four levels are supported:
@@ -86,7 +86,7 @@ class SimpleLogger(object):
       such as in an optimization loop or testing.
 
     """
-    def __init__(self, level='debug', encoding='utf-8', log_func=None):
+    def __init__(self, level: str='debug', encoding: str='utf-8', log_func=None) -> None:
         """
         Parameters
         ----------
@@ -109,7 +109,7 @@ class SimpleLogger(object):
         self.encoding = encoding
         assert isinstance(encoding, str), type(encoding)
 
-    def stdout_logging(self, typ, filename, lineno, msg):
+    def stdout_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
         """
         Default logging function. Takes a text and outputs to stdout.
 
@@ -135,7 +135,7 @@ class SimpleLogger(object):
         _write(typ, name, msg2, self.encoding)
         #sys.stdout.flush()
 
-    def msg_typ(self, typ, msg):
+    def msg_typ(self, typ: str, msg: str) -> None:
         """
         Log message of a given type
 
@@ -151,7 +151,7 @@ class SimpleLogger(object):
         self.log_func(typ, filename, n, msg)
         #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, n, msg))
 
-    def simple_msg(self, msg, typ=None):
+    def simple_msg(self, msg: str, typ: Optional[str]=None) -> None:
         """
         Log message directly without any altering.
 
@@ -170,7 +170,7 @@ class SimpleLogger(object):
         assert msg is not None, msg
         self.log_func(typ, filename, lineno, msg)
 
-    def debug(self, msg):
+    def debug(self, msg: str) -> None:
         """
         Log DEBUG message
 
@@ -184,7 +184,7 @@ class SimpleLogger(object):
             return
         self.msg_typ('DEBUG', msg)
 
-    def info(self, msg):
+    def info(self, msg: str) -> None:
         """
         Log INFO message
 
@@ -199,7 +199,7 @@ class SimpleLogger(object):
         assert msg is not None, msg
         self.msg_typ('INFO', msg)
 
-    def warning(self, msg):
+    def warning(self, msg: str) -> None:
         """
         Log WARNING message
 
@@ -214,7 +214,7 @@ class SimpleLogger(object):
         assert msg is not None, msg
         self.msg_typ('WARNING', msg)
 
-    def error(self, msg):
+    def error(self, msg: str) -> None:
         """
         Log ERROR message
 
@@ -229,7 +229,7 @@ class SimpleLogger(object):
         assert msg is not None, msg
         self.msg_typ('ERROR', msg)
 
-    def exception(self, msg):
+    def exception(self, msg: str) -> None:
         """
         Log EXCEPTION message
 
@@ -242,7 +242,7 @@ class SimpleLogger(object):
         assert msg is not None, msg
         self.msg_typ('EXCEPTION', msg)
 
-    def critical(self, msg):
+    def critical(self, msg: str) -> None:
         """
         Log CRITICAL message
 
@@ -259,7 +259,7 @@ class SimpleLogger(object):
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
 
 
-def get_logger(log=None, level='debug', encoding='utf-8'):
+def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLogger:
     """
     This function is useful as it will instantiate a simpleLogger object if log=None.
 
@@ -311,7 +311,7 @@ def get_logger2(log=None, debug=True, encoding='utf-8'):
         log = SimpleLogger(level, encoding=encoding)
     return log
 
-def _write_colorama_screen(typ, msg):
+def _write_colorama_screen(typ: str, msg: str) -> None:
     """
     Writes to the screen
 
@@ -336,7 +336,7 @@ def _write_colorama_screen(typ, msg):
     else: # error / other
         sys.stdout.write(Fore.RED + msg)
 
-def write_error(msg):
+def write_error(msg: str) -> None:
     """writes an error message"""
     sys.stdout.write(Fore.RED + msg)
 

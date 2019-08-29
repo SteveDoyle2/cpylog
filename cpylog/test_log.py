@@ -1,5 +1,4 @@
 """tests log.py"""
-import os
 import unittest
 
 from cpylog import SimpleLogger, get_logger, get_logger2
@@ -51,8 +50,8 @@ class TestLog(unittest.TestCase):
         log3.warning('warning')
         log3.error('error')
         log3.debug('debug')
-        with self.assertRaises(NameError):
-            log.bad('bad')
+        with self.assertRaises(AttributeError):
+            log3.bad('bad')
 
 
 if __name__ == "__main__":

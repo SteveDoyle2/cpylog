@@ -1,8 +1,7 @@
 # coding: utf-8
-from __future__ import print_function, unicode_literals
 import sys
 import os
-from typing import Optional, Any
+from typing import Optional, Tuple
 
 def ipython_info() -> Optional[str]:
     """determines if iPython/Jupyter notebook is running"""
@@ -17,7 +16,7 @@ def ipython_info() -> Optional[str]:
     #return ip
 
 
-def properties(nframe: int=3) -> Any:
+def properties(nframe: int=3) -> Tuple[int, str]:
     """
     Gets frame information
 
