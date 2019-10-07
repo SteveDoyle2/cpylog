@@ -5,7 +5,7 @@ import os
 from typing import Optional
 from .utils import ipython_info, properties
 
-__version__ = '1.0.5'
+__version__ = '1.1.0'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -13,6 +13,8 @@ __license__ = 'BSD-3'
 __author__ = ''
 __email__ = ''
 
+# True if writing to screen
+# False if writing to a file
 # terminal is False if we're piping to a file
 IS_TERMINAL = False
 if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this
@@ -339,6 +341,91 @@ def _write_colorama_screen(typ: str, msg: str) -> None:
 def write_error(msg: str) -> None:
     """writes an error message"""
     sys.stdout.write(Fore.RED + msg)
+
+
+class FileLogger(SimpleLogger):
+    def __init__(self, level='debug', encoding='utf-8', filename=None, include_stream=True, log_func=None):
+        SimpleLogger.__init__(self, level=level, encoding=encoding, log_func=None)
+
+        self.include_stream = include_stream
+        self.loggers = []
+        self._file = None
+        self._filename = filename
+
+        is_file_logger = filename is not None
+        assert include_stream or is_file_logger, 'a print stream or file must be included'
+
+        if include_stream and is_file_logger:
+            self.loggers.append(self.log_func)
+            self._file = open(filename, 'w', encoding=encoding)
+            self.loggers.append(self.file_logging)
+            self.msg_typ = self.msg_typ_file
+        elif is_file_logger:
+            #print(f'only using a file; include_stream={include_stream} is_file_logger={is_file_logger} filename={filename}')
+            self._file = open(filename, 'w', encoding=encoding)
+            self.log_func = self.file_logging
+        #else:
+            #print(f'only using a streamer; include_stream={include_stream} is_file_logger={is_file_logger} filename={filename}')
+        #self.debug(str(self))
+
+
+    def __repr__(self):
+        return f'FileLogger(level={self.level!r}, filename={self._filename}, include_stream={self.include_stream}, encoding={self.encoding!r})'
+
+    def __del__(self):
+        #print('del...')
+        if self._file is not None:
+            self._file.close()
+
+    def __enter__(self):
+        return self
+    def __exit__(self, exct_type, exce_value, traceback):
+        if self._file is not None:
+            #print(f'closing {self._filename}')
+            self._file.close()
+        #print(f'cleanup {self._filename}')
+
+    def msg_typ_file(self, typ: str, msg: str) -> None:
+        """
+        Log message of a given type
+
+        Parameters
+        ----------
+        typ : str
+            type of a message (e.g. INFO)
+        msg : str
+            message to be logged
+
+        """
+        n, filename = properties()
+        for log_func in self.loggers:
+            log_func(typ, filename, n, msg)
+
+    def file_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
+        """
+        Default logging function. Takes a text and outputs to stdout.
+
+        Parameters
+        ----------
+        typ : str
+            message type - ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+        filename : str
+            the active file
+        lineno : int
+            line number
+        msg : str
+            message to be displayed
+
+        Message will have format 'typ: msg'
+
+        """
+        # max length of 'INFO', 'DEBUG', 'WARNING', etc.
+        name = '%-8s' % (typ + ':')
+        filename_n = '%s:%s' % (filename, lineno)
+        msg2 = ' %-28s %s\n' % (filename_n, msg)
+
+        #print('file name=%r msg=%r' % (name, msg))
+        self._file.write((name + msg) if typ else msg)
 
 
 if __name__ == '__main__':  # pragma: no cover
