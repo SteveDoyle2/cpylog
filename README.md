@@ -16,9 +16,9 @@ The **additional** features that the ``SimpleLogger`` has:
  - overwritable log functions in order to integrate the log with a GUI
 
 The **additional** features that the ``FileLogger`` has beyond ``SimpleLogger``:
- - file writing or stream writing  (new in v1.1)
+ - file writing and/or stream writing  (new in v1.1)
 
-As a **bonus** (limitation?), it crashes when you have invalid logging statement.
+As a **bonus** (limitation?), it crashes when you have invalid logging statement.  This ensures that logging is correct, so if you switch to standard Python logging, that will also be correct.
 
 One of the goals of this logging class is that because it implements a subset of standard Python logging,
 you can replace it with a standard Python log.
