@@ -42,11 +42,11 @@ log1.info('info')
 log1.warning('warning')
 log1.exception('exception')
 log1.critical('critical')
-file.py:4 DEBUG:      debug
-file.py:5 INFO:       info
-file.py:6 WARNING:    warning
-file.py:7 EXCEPTION:  exception
-file.py:8 CRITICAL:   critical
+DEBUG:     file.py:4  debug
+INFO:      file.py:5  info
+WARNING:   file.py:6  warning
+EXCEPTION: file.py:7  exception
+CRITICAL:  file.py:8  critical
 
 # debug: True=debug, False=info, None=warning
 log2 = get_logger2(log=log1, debug=True, encoding='utf-8')
