@@ -17,13 +17,21 @@ The **additional** features that the ``SimpleLogger`` has:
 
 The **additional** features that the ``FileLogger`` has beyond ``SimpleLogger``:
  - file writing and/or stream writing  (new in v1.1)
+   - context manager to close file
+     ```python
+     with FileLoger(level='debug', filename=None, include_stream=True) as log:
+         log.debug('SimpleLogger')
+     with FileLoger(level='debug', filename='file.log', include_stream=True) as log:
+         log.debug('FileLogger/SimpleLogger')
+     with FileLoger(level='debug', filename='file.log', include_stream=False) as log:
+         log.debug('FileLogger')
+     ```
 
-As a **bonus** (limitation?), it crashes when you have invalid logging statement.  This ensures that logging is correct, so if you switch to standard Python logging, that will also be correct.
-
-One of the goals of this logging class is that because it implements a subset of standard Python logging,
-you can replace it with a standard Python log.
+As a **bonus** (limitation?), it crashes when you have invalid logging statement.  This ensures that logging is correct, so if you switch to standard Python logging, that will also be correct.  One of the goals of this logging class is that because it implements a subset of standard Python logging, you can replace it with a standard Python log.
 
 ```python
+from cpylog import get_logger, get_logger2
+
 # if a log already exists, it's passed through
 log0 = None
 
@@ -43,7 +51,10 @@ file.py:8 CRITICAL:   critical
 # debug: True=debug, False=info, None=warning
 log2 = get_logger2(log=log1, debug=True, encoding='utf-8')
 
-# this is the base class
+``SimpleLogger`` is the base class and if we call it directly, we can overwrite the logging message style.
+
+```python
+from cpylog import SimpleLogger
 log_base = SimpleLogger(self, level: str='debug', encoding: str='utf-8', log_func=None)
 
 # we can call it with an external function, so you can make a custom formatter
