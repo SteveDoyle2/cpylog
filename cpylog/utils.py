@@ -15,6 +15,40 @@ def ipython_info() -> Optional[str]:
         #ip = 'terminal'
     #return ip
 
+def get_default_session() -> Optional[str]:
+    """
+    Locates the first ancestor process which is a shell. Returns
+    its pid, or None if not found.
+    """
+    try:
+        import psutil
+    except ImportError:
+        return None
+
+    if psutil.POSIX:
+        def predicate(name):
+            return name.endswith("sh")
+    elif psutil.WINDOWS:
+        def predicate(name):
+            return name in ("cmd.exe", "powershell.exe")
+    else:
+        return None
+
+    proc = psutil.Process()
+    proc = proc.parent()
+    if proc is None:
+        # python.exe -> wing.exe -> explorer.exe
+        # python.exe -> cmd.exe -> explorer.exe
+        # python.exe -> powershell.exe -> explorer.exe
+        return None
+
+    while proc.pid:
+        name = proc.name()
+        if predicate(name):
+            return name
+            #return proc.pid
+        proc = proc.parent()
+    return None
 
 def properties(nframe: int=3) -> Tuple[int, str]:
     """

@@ -3,7 +3,7 @@
 import sys
 import os
 from typing import Optional
-from .utils import ipython_info, properties
+from .utils import ipython_info, properties, get_default_session
 
 __version__ = '1.1.0'
 __desc__ = 'cpylog'
@@ -36,6 +36,11 @@ if USE_COLORAMA:
 
 
 if USE_COLORAMA:
+    session_name = get_default_session()
+    YELLOW = Fore.YELLOW
+    if session_name and 'powershell.exe' in session_name:
+        YELLOW = Fore.RED
+
     def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """if we're writing to the screen"""
         try:
@@ -334,7 +339,7 @@ def _write_colorama_screen(typ: str, msg: str) -> None:
         sys.stdout.write(Fore.CYAN + msg)
     elif typ == 'WARNING':
         # no ORANGE?
-        sys.stdout.write(Fore.YELLOW + msg)
+        sys.stdout.write(YELLOW + msg)
     else: # error / other
         sys.stdout.write(Fore.RED + msg)
 
