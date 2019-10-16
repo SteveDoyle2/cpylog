@@ -33,10 +33,6 @@ matrix:
       env:
       - PKGS='psutil'
 
-    - name: "Python 3.5"
-      python: '3.5'
-      env:
-      - PKGS='psutil'
     #--------------------------------------------------------------------------------------------------
       # without psutil
     - name: "Python nightly (3.8)"
@@ -51,11 +47,6 @@ matrix:
 
     - name: "Python 3.6"
       python: '3.6'
-      env:
-      - PKGS=''
-
-    - name: "Python 3.5"
-      python: '3.5'
       env:
       - PKGS=''
 
@@ -76,7 +67,7 @@ install:
 
 #===install dependencies===
 #-----------pip------------
-  - if [[ "$PKGS" != "" ]]; then python pip install ${PKGS}; fi
+  - if [[ ${PKGS} != "" ]]; then python pip install ${PKGS}; fi
   - pip list
 #----------run-----------
   - python setup.py develop
