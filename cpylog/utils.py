@@ -18,7 +18,12 @@ def ipython_info() -> Optional[str]:
 def get_default_session() -> Optional[str]:
     """
     Locates the first ancestor process which is a shell. Returns
-    its pid, or None if not found.
+    its name, or None if not found.  Some examples include:
+     - cmd.exe
+     - powershell.exe
+     - WindowsTerminal.exe
+     - sh
+
     """
     try:
         import psutil
@@ -40,15 +45,21 @@ def get_default_session() -> Optional[str]:
         # python.exe -> wing.exe -> explorer.exe
         # python.exe -> cmd.exe -> explorer.exe
         # python.exe -> powershell.exe -> explorer.exe
+        # powershell.exe -> conhost.exe -> WindowsTerminal.exe -> sihost.exe
+        #                -> svchost.exe -> services.exe -> wininit.exe
         return None
 
-    while proc.pid:
+    return_name = None
+    while proc and proc.pid:
         name = proc.name()
+        #print(name)
         if predicate(name):
-            return name
+            return_name = name
+        elif name == 'WindowsTerminal.exe':
+            return_name = 'cmd.exe'
             #return proc.pid
         proc = proc.parent()
-    return None
+    return return_name
 
 def properties(nframe: int=3) -> Tuple[int, str]:
     """
