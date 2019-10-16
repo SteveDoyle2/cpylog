@@ -67,7 +67,9 @@ install:
 
 #===install dependencies===
 #-----------pip------------
-  - if [[ ${PKGS} != "" ]]; then python pip install ${PKGS}; fi
+  - if [ ${PKGS} != "" ];
+        then python pip install ${PKGS}; 
+    fi
   - pip list
 #----------run-----------
   - python setup.py develop
