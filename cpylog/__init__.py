@@ -25,7 +25,7 @@ USE_COLORAMA = IS_TERMINAL and not USE_HTML
 if USE_COLORAMA:
     # You're running in a real terminal
     try:
-        from colorama import init as colorinit, Fore  # type: ignore
+        from colorama import init as colorinit, Fore, Style  # type: ignore
         colorinit(autoreset=True)
         IS_COLORAMA = True
     except ImportError:
@@ -37,9 +37,15 @@ if USE_COLORAMA:
 
 if USE_COLORAMA:
     session_name = get_default_session()
-    YELLOW = Fore.YELLOW
-    if session_name and 'powershell.exe' in session_name:
-        YELLOW = Fore.RED
+    RED = Fore.RED # error
+    GREEN = Fore.GREEN # info
+    CYAN = Fore.CYAN # debug
+    YELLOW = Fore.YELLOW # warning
+    if session_name and 'powershell.exe' in session_name or 'cmd.exe' in session_name:
+        RED += Style.BRIGHT
+        CYAN += Style.BRIGHT
+        GREEN += Style.BRIGHT
+        YELLOW += Style.BRIGHT
 
     def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """if we're writing to the screen"""
@@ -279,6 +285,10 @@ def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLog
     encoding : str; default='utf-8'
         the unicode encoding method
 
+    Returns
+    -------
+    log : SimpleLogger
+        a logger object
     """
     assert not isinstance(log, str), log
     return SimpleLogger(level, encoding=encoding) if log is None else log
@@ -334,18 +344,18 @@ def _write_colorama_screen(typ: str, msg: str) -> None:
     #
     # Python 3 requires str, not bytes
     if typ == 'INFO':
-        sys.stdout.write(Fore.GREEN + msg)
+        sys.stdout.write(GREEN + msg)
     elif typ == 'DEBUG':
-        sys.stdout.write(Fore.CYAN + msg)
+        sys.stdout.write(CYAN + msg)
     elif typ == 'WARNING':
         # no ORANGE?
         sys.stdout.write(YELLOW + msg)
     else: # error / other
-        sys.stdout.write(Fore.RED + msg)
+        sys.stdout.write(RED + msg)
 
 def write_error(msg: str) -> None:
     """writes an error message"""
-    sys.stdout.write(Fore.RED + msg)
+    sys.stdout.write(RED + msg)
 
 
 class FileLogger(SimpleLogger):
