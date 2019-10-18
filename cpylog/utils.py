@@ -80,6 +80,13 @@ def properties(nframe: int=3) -> Tuple[int, str]:
     filename : str
         the filen ame of the nth frame
     """
+    # helpful for seeing what's happening
+    #for iframe in [0, 1, 2, 3, 4, 5]:
+        #frame = sys._getframe(iframe)
+        #active_file = os.path.basename(frame.f_globals['__file__'])
+        #star = '*' if iframe == nframe else ''
+        #print(f'{star}{iframe}: {frame} active_file={active_file}')
+
     # jump to get out of the logger code
     frame = sys._getframe(nframe)
     active_file = os.path.basename(frame.f_globals['__file__'])

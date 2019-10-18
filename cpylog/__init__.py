@@ -162,7 +162,7 @@ class SimpleLogger:
         _write(typ, name, msg2, self.encoding)
         #sys.stdout.flush()
 
-    def msg_typ(self, typ: str, msg: str) -> None:
+    def msg_typ(self, typ: str, msg: str, nframe: int=3) -> None:
         """
         Log message of a given type
 
@@ -172,11 +172,15 @@ class SimpleLogger:
             type of a message (e.g. INFO)
         msg : str
             message to be logged
+        nframe : int; default=3
+            the number of log levels to jump
+            should be 3+
+
 
         """
         if not self._active:
             return
-        n, filename = properties()
+        n, filename = properties(nframe=nframe)
         self.log_func(typ, filename, n, msg)
         #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, n, msg))
 
