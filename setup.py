@@ -41,6 +41,7 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         ], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
     keywords='',
     python_requires='>=3.6',
