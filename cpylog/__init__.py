@@ -5,7 +5,7 @@ import os
 from typing import Optional
 from .utils import ipython_info, properties, get_default_session
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
