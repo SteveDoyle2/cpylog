@@ -52,7 +52,7 @@ if USE_COLORAMA:
         try:
             _write_colorama_screen(typ, name + msg)
         except IOError:
-            sys.stdout.write('error writing line...encoding=%r\n' % encoding)
+            sys.stdout.write(f'error writing line...encoding={encoding!r}\n')
             sys.stdout.write(msg)
 
 elif USE_HTML:
@@ -72,7 +72,7 @@ elif USE_HTML:
             color = 'orange'
         else:
             color = 'red'
-        display(HTML("<text style=color:{0}>{1}</text>".format(color, name + msg)))
+        display(HTML(f'<text style=color:{color}>{name + msg}</text>'))
 else:
     def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """writing to the screen"""
@@ -120,7 +120,21 @@ class SimpleLogger:
         self.level = level
         self.log_func = log_func
         self.encoding = encoding
+        self._active = True
         assert isinstance(encoding, str), type(encoding)
+
+    def set_enabled(self, enabled: bool) -> None:
+        """temporarily enable/disable logging"""
+        assert isinstance(enabled, bool), enabled
+        self._active = enabled
+
+    def enable(self) -> None:
+        """activates the logger"""
+        self._active = True
+
+    def disable(self) -> None:
+        """deactivates the logger"""
+        self._active = False
 
     def stdout_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
         """
@@ -142,7 +156,7 @@ class SimpleLogger:
         """
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
-        filename_n = '%s:%s' % (filename, lineno)
+        filename_n = f'{filename}:{lineno}'
         msg2 = ' %-28s %s\n' % (filename_n, msg)
 
         _write(typ, name, msg2, self.encoding)
@@ -160,6 +174,8 @@ class SimpleLogger:
             message to be logged
 
         """
+        if not self._active:
+            return
         n, filename = properties()
         self.log_func(typ, filename, n, msg)
         #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, n, msg))
