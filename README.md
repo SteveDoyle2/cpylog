@@ -11,6 +11,7 @@ This is a library for creating a limited pure Python (3.6+) version of the stand
 The **additional** features that the ``SimpleLogger`` has:
  - support for colorama highlighting
    - automatically disabled when piping to a file
+   - automatically disabled in Spyder (new in v1.2)
  - HTML support for the Jupyter notebook
    - automatically enabled
  - overwritable log functions in order to integrate the log with a GUI
@@ -66,13 +67,13 @@ log_func = SimpleLogger(level='info', log_func=log_func)
 
 |  Version  | Docs  | Status |
 | :--- 	  | :--- 	  | :--- 	  |
-|   Master | [![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest) | [![Linux Status](https://img.shields.io/travis/cpylog/cpylog/master.svg)](https://travis-ci.org/cpylog/cpylog) ![Coverage Status](https://coveralls.io/repos/github/cpylog/cpylog/badge.svg?branch=master) | 
+|   Master | [![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest) | [![Linux Status](https://img.shields.io/travis/cpylog/cpylog/master.svg)](https://travis-ci.org/cpylog/cpylog) ![Coverage Status](https://coveralls.io/repos/github/cpylog/cpylog/badge.svg?branch=master) |
 |  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) | docs | [![Build Status](https://img.shields.io/travis/cpylog/cpylog/v1.0.svg)](https://travis-ci.org/cpylog/cpylog) [![Coverage Status](https://img.shields.io/coveralls/cpylog/cpylog/v1.0.svg)](https://coveralls.io/github/cpylog/cpylog?branch=v1.0) |
 
 
 <!---
 [![Windows Status](https://ci.appveyor.com/api/projects/status/1qau107h43mbgghi/branch/master?svg=true)](https://ci.appveyor.com/project/cpylog/cpylog)
 
-[![codecov](https://codecov.io/gh/cpylog/cpylog/branch/master/graph/badge.svg)](https://codecov.io/gh/cpylog/cpylog) 
+[![codecov](https://codecov.io/gh/cpylog/cpylog/branch/master/graph/badge.svg)](https://codecov.io/gh/cpylog/cpylog)
 
 [![Coverage Status](https://img.shields.io/coveralls/cpylog/cpylog/master.svg)](https://coveralls.io/github/cpylog/cpylog?branch=master)
