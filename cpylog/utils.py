@@ -5,8 +5,19 @@ from typing import Optional, Tuple
 
 def ipython_info() -> Optional[str]:
     """determines if iPython/Jupyter notebook is running"""
+    #print('type', type(get_ipython()))
+    #print('config', get_ipython().config['IPKernelApp'])
     try:
-        return get_ipython()
+        ipython = get_ipython()
+        
+        # Spyder 4.0 doesn't support HTML objects.
+        # we're crossing our fingers that Spyder 4.1 does...
+        if 'spyder' in sys.modules and 'spyder_kernels' in sys.modules:
+            import spyder
+            spyder_version = spyder.__version__
+            if spyder_version < '4.1':
+                return None
+        return ipython
     except NameError:
         return None
     #if 'ipykernel' in sys.modules:

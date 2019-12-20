@@ -3,9 +3,9 @@
 import sys
 import os
 from typing import Optional
-from .utils import ipython_info, properties, get_default_session
+from cpylog.utils import ipython_info, properties, get_default_session
 
-__version__ = '1.1.1'
+__version__ = '1.2.0'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -22,6 +22,7 @@ if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this
 
 USE_HTML = ipython_info() is not None
 USE_COLORAMA = IS_TERMINAL and not USE_HTML
+
 if USE_COLORAMA:
     # You're running in a real terminal
     try:
@@ -31,21 +32,20 @@ if USE_COLORAMA:
     except ImportError:
         IS_COLORAMA = False
     USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
-    #print('USE_COLORAMA =', USE_COLORAMA, IS_COLORAMA, IS_TERMINAL, ipython_info())
-#print('USE_HTML =', USE_HTML)
-
+#print(sys.modules)
 
 if USE_COLORAMA:
-    session_name = get_default_session()
+    #import time
+    #session_name = get_default_session()
     RED = Fore.RED # error
     GREEN = Fore.GREEN # info
     CYAN = Fore.CYAN # debug
     YELLOW = Fore.YELLOW # warning
-    if session_name and 'powershell.exe' in session_name or 'cmd.exe' in session_name:
-        RED += Style.BRIGHT
-        CYAN += Style.BRIGHT
-        GREEN += Style.BRIGHT
-        YELLOW += Style.BRIGHT
+    #if session_name and 'powershell.exe' in session_name or 'cmd.exe' in session_name:
+    RED += Style.BRIGHT
+    CYAN += Style.BRIGHT
+    GREEN += Style.BRIGHT
+    YELLOW += Style.BRIGHT
 
     def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """if we're writing to the screen"""
@@ -74,8 +74,17 @@ elif USE_HTML:
             color = 'red'
         display(HTML(f'<text style=color:{color}>{name + msg}</text>'))
 else:
+    #import time
     def _write(typ: str, name: str, msg: str, encoding: str) -> None:
         """writing to the screen"""
+        #timestring = '%s  ' % time.strftime('%H:%M:%S', time.localtime())
+        # max length of 'INFO', 'DEBUG', 'WARNING', etc.
+        #name = '%-8s' % (typ + ':')
+        #filename_n = '%s:%s' % (filename, lineno)
+        #msg2 = ' %-28s %s\n' % (filename_n, msg)
+
+        #msg_all = (timestring + name + msg) if typ else timestring + msg
+        #sys.stdout.write(msg_all)
         sys.stdout.write((name + msg) if typ else msg)
 
 
@@ -99,7 +108,8 @@ class SimpleLogger:
       such as in an optimization loop or testing.
 
     """
-    def __init__(self, level: str='debug', encoding: str='utf-8', log_func=None) -> None:
+    def __init__(self, level: str='debug', encoding: str='utf-8', 
+                 log_func=None) -> None:
         """
         Parameters
         ----------
@@ -136,7 +146,8 @@ class SimpleLogger:
         """deactivates the logger"""
         self._active = False
 
-    def stdout_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
+    def stdout_logging(self, typ: str, filename: str, lineno: int, 
+                       msg: str) -> None:
         """
         Default logging function. Takes a text and outputs to stdout.
 
@@ -294,7 +305,8 @@ class SimpleLogger:
 
 def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLogger:
     """
-    This function is useful as it will instantiate a simpleLogger object if log=None.
+    This function is useful as it will instantiate a simpleLogger object 
+    if log=None.
 
     Parameters
     ----------
@@ -314,7 +326,7 @@ def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLog
     return SimpleLogger(level, encoding=encoding) if log is None else log
 
 
-def get_logger2(log=None, debug=True, encoding='utf-8'):
+def get_logger2(log=None, debug=True, encoding='utf-8') -> SimpleLogger:
     """
     This function is useful as it will instantiate a SimpleLogger object
     if log=None.
@@ -363,6 +375,15 @@ def _write_colorama_screen(typ: str, msg: str) -> None:
     # write to the screen
     #
     # Python 3 requires str, not bytes
+    #timestring = '%s  ' % time.strftime('%H:%M:%S', time.localtime())
+    # max length of 'INFO', 'DEBUG', 'WARNING', etc.
+    #name = '%-8s' % (typ + ':')
+    #filename_n = '%s:%s' % (filename, lineno)
+    #msg2 = ' %-28s %s\n' % (filename_n, msg)
+
+    #msg_all = (timestring + name + msg) if typ else timestring + msg
+
+    #msg = timestring + msg
     if typ == 'INFO':
         sys.stdout.write(GREEN + msg)
     elif typ == 'DEBUG':
@@ -414,6 +435,7 @@ class FileLogger(SimpleLogger):
 
     def __enter__(self):
         return self
+
     def __exit__(self, exct_type, exce_value, traceback):
         if self._file is not None:
             #print(f'closing {self._filename}')
@@ -457,7 +479,7 @@ class FileLogger(SimpleLogger):
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
         filename_n = '%s:%s' % (filename, lineno)
-        msg2 = ' %-28s %s\n' % (filename_n, msg)
+        #msg2 = ' %-28s %s\n' % (filename_n, msg)
 
         #print('file name=%r msg=%r' % (name, msg))
         self._file.write((name + msg) if typ else msg)
