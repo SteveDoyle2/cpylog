@@ -3,7 +3,7 @@
 import sys
 import os
 from typing import Optional
-from cpylog.utils import ipython_info, properties, get_default_session
+from cpylog.utils import ipython_info, properties # , get_default_session
 
 __version__ = '1.2.0'
 __desc__ = 'cpylog'
@@ -108,7 +108,7 @@ class SimpleLogger:
       such as in an optimization loop or testing.
 
     """
-    def __init__(self, level: str='debug', encoding: str='utf-8', 
+    def __init__(self, level: str='debug', encoding: str='utf-8',
                  log_func=None) -> None:
         """
         Parameters
@@ -146,7 +146,7 @@ class SimpleLogger:
         """deactivates the logger"""
         self._active = False
 
-    def stdout_logging(self, typ: str, filename: str, lineno: int, 
+    def stdout_logging(self, typ: str, filename: str, lineno: int,
                        msg: str) -> None:
         """
         Default logging function. Takes a text and outputs to stdout.
@@ -305,7 +305,7 @@ class SimpleLogger:
 
 def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLogger:
     """
-    This function is useful as it will instantiate a simpleLogger object 
+    This function is useful as it will instantiate a simpleLogger object
     if log=None.
 
     Parameters
@@ -478,7 +478,7 @@ class FileLogger(SimpleLogger):
         """
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
-        filename_n = '%s:%s' % (filename, lineno)
+        #filename_n = '%s:%s' % (filename, lineno)
         #msg2 = ' %-28s %s\n' % (filename_n, msg)
 
         #print('file name=%r msg=%r' % (name, msg))
