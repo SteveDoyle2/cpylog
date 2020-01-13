@@ -1,9 +1,10 @@
-#from __future__ import annotations
+from __future__ import annotations
 import os
 import warnings
-#from typing import TYPE_CHECKING
-#if TYPE_CHECKING:  # pragma: no cover
-from cpylog import SimpleLogger
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:  # pragma: no cover
+    from cpylog import SimpleLogger
+
 
 class WarningRedirector:
     def __init__(self, log: SimpleLogger):
@@ -18,7 +19,7 @@ class WarningRedirector:
 
         """
         self.log = log
-        assert isinstance(self.log, SimpleLogger)
+        #assert isinstance(self.log, SimpleLogger)
 
         self._showwarning_old = None
 
@@ -30,7 +31,7 @@ class WarningRedirector:
         """
         self._showwarning_old = warnings.showwarning
 
-        def warn(message, category, filename, lineno, file=None, line=None):
+        def warn(message: str, category, filename: str, lineno: str, file=None, line=None):
             #return self.log.log_function_handler('WARNING', os.path.basename(filename), lineno,
                                                  #message)
             self.log.log_func('WARNING', os.path.basename(filename), lineno,

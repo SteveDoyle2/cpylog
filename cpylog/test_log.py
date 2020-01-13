@@ -4,8 +4,8 @@ import warnings
 import unittest
 
 from cpylog import (
-    SimpleLogger, FileLogger, get_logger, get_logger2, USE_HTML)
-from cpylog.warning_redirector import WarningRedirector
+    SimpleLogger, FileLogger, get_logger, get_logger2,
+    WarningRedirector, USE_HTML)
 
 from cpylog.screen_utils import write_screen
 try:

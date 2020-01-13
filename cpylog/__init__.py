@@ -4,6 +4,7 @@ import sys
 import os
 from typing import Optional
 from cpylog.utils import ipython_info, properties # , get_default_session
+from cpylog.warning_redirector import WarningRedirector
 
 __version__ = '1.3.0'
 __desc__ = 'cpylog'
