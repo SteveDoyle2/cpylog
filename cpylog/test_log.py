@@ -1,35 +1,81 @@
 """tests log.py"""
 import os
+import warnings
 import unittest
 
-from cpylog import SimpleLogger, FileLogger, get_logger, get_logger2
+from cpylog import (
+    SimpleLogger, FileLogger, get_logger, get_logger2, USE_HTML)
+from cpylog.warning_redirector import WarningRedirector
 
+from cpylog.screen_utils import write_screen
+try:
+    from cpylog.colorama_utils import write_colorama
+except ImportError as exception:
+    warnings.warn(exception)
+
+try:
+    from cpylog.html_utils import write_html
+    HTML_PASSED = True
+except ImportError as exception:
+    warnings.warn(exception)
+    HTML_PASSED = False
 
 class TestLog(unittest.TestCase):
     """tests the SimpleLogger and FileLogger classes"""
     #def test_multi_logger(self):
         #logger = MultiLogger()
 
+
+    @unittest.skipIf(HTML_PASSED == False, 'HTML import failed')
+    def test_html(self):
+        """tests the HTML interface"""
+        typ = 'CAT'
+        name = 'name: '
+        msg = 'msg'
+        encoding = 'pig'
+        write_html(typ, name, msg, encoding)
+
+        encoding = None
+        write_html(typ, name, msg, encoding)
+
+    def test_screen_write(self):
+        """tests writing to the screen"""
+        typ = 'CAT'
+        name = 'name: '
+        msg = 'msg'
+        encoding = 'pig'
+        write_screen(typ, name, msg, encoding)
+
+        encoding = None
+        write_screen(typ, name, msg, encoding)
+
     def test_file_logger(self):
         """tests also writing to a file"""
-        with FileLogger(level='debug', filename='file1.log', include_stream=True,
+        filename = 'file_logger_1.log'
+        _remove_file(filename)
+        with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
+            assert str(test_log) == "FileLogger(level='debug', filename=file_logger_1.log, include_stream=True, encoding='utf-8')"
             test_log.debug('debug message')
             test_log.warning('warning')
             test_log.error('errors')
             test_log.exception('exception')
-        os.remove('file1.log')
+        os.remove(filename)
 
-        with FileLogger(level='debug', filename='file2.log', include_stream=False,
+        filename = 'file_logger_2.log'
+        _remove_file(filename)
+        with FileLogger(level='debug', filename=filename, include_stream=False,
                         encoding='utf-8') as test_log2:
             test_log2.debug('no streamer')
-        os.remove('file2.log')
+        os.remove(filename)
 
-        test_log2 = FileLogger(level='debug', filename='file2b.log', include_stream=False,
+        filename = 'file_logger_3.log'
+        _remove_file(filename)
+        test_log2 = FileLogger(level='debug', filename=filename, include_stream=False,
                                encoding='utf-8')
         test_log2.debug('no streamer')
         del test_log2
-        #os.remove('file2b.log')
+        #os.remove(filename)
 
         #test_log2 = FileLogger(level='debug', filename=None, include_stream=False, encoding='utf-8')
         #test_log2.debug('no file/streamer')
@@ -74,8 +120,15 @@ class TestLog(unittest.TestCase):
     def test_get_logger(self):
         """tests the get_logger function"""
         log1 = get_logger(level='debug')
+        assert str(log1) == "SimpleLogger(level='debug', encoding='utf-8')"
+        assert log1 == log1
+
         log2 = get_logger(level='info')
+        assert str(log2) == "SimpleLogger(level='info', encoding='utf-8')"
         assert log1 is not log2
+        assert log1 != log2
+        assert not (log1 == log2)
+        assert not (log1 is log2)
         log3 = get_logger(log=log2, level='info')
         assert log2 is log3
 
@@ -104,6 +157,48 @@ class TestLog(unittest.TestCase):
         with self.assertRaises(AttributeError):
             log3.bad('bad')
 
+
+class TestWarningRedirector(unittest.TestCase):
+    """Test for ``WarningRedirector``."""
+
+    def test_log_context(self):
+        """Test ``WarningRedirector`` as a context manager."""
+        log = get_logger(log=None, level='debug')
+        log.info('test_log_context')
+        with WarningRedirector(log) as wr:
+            warnings.warn('test_redirected')
+        warnings.warn('test')
+
+    def test_file_context(self):
+        """Test ``WarningRedirector`` as a context manager."""
+        filename = 'file_log_context.log'
+        _remove_file(filename)
+        with FileLogger(level='debug', filename=filename, include_stream=True,
+                        encoding='utf-8') as log:
+            log.info('test_file_context')
+            with WarningRedirector(log) as wr:
+                warnings.warn('test_redirected')
+            warnings.warn('test')
+        _remove_file(filename)
+
+    def test_log_returns(self):
+        """
+        Test ``WarningRedirector`` returns to the regular warning
+        function after use.
+
+        """
+        warning_function = warnings.showwarning
+
+        log = get_logger(log=None, level='debug')
+        log.info('test_returns')
+        with WarningRedirector(log) as wr:
+            warnings.warn('test_redirected')
+        warnings.warn('default warn')
+        self.assertIs(warnings.showwarning, warning_function)
+
+def _remove_file(filename):
+    if os.path.exists(filename):
+        os.remove(filename)
 
 if __name__ == "__main__":
     unittest.main()
