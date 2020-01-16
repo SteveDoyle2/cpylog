@@ -1,7 +1,7 @@
 # cpylog
 A simple pure python colorama/HTML capable logger
 
-This is a library for creating a limited pure Python (3.6+) version of the standard logging object.  There are 3 main classes:
+This is a library for creating a limited pure Python (3.7+) version of the standard logging object.  There are 3 main classes:
  - ``SimpleLogger``
  - ``FileLogger`` (new in v1.1)
  - ``WarningRedirector`` (new in v1.3)
