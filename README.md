@@ -1,9 +1,10 @@
 # cpylog
 A simple pure python colorama/HTML capable logger
 
-This is a library for creating a limited pure Python (3.6+) version of the standard logging object.  There are two main classes:
+This is a library for creating a limited pure Python (3.6+) version of the standard logging object.  There are 3 main classes:
  - ``SimpleLogger``
  - ``FileLogger`` (new in v1.1)
+ - ``WarningRedirector`` (new in v1.3)
 
 ``SimpleLogger`` is **limited** in that:
  - no handlers
@@ -18,14 +19,31 @@ The **additional** features that the ``SimpleLogger`` has:
 
 The **additional** features that the ``FileLogger`` has beyond ``SimpleLogger``:
  - file writing and/or stream writing  (new in v1.1)
+   - set_enabled / enable / disable logger
    - context manager to close file
      ```python
-     with FileLoger(level='debug', filename=None, include_stream=True) as log:
+     with FileLogger(level='debug', filename=None, include_stream=True) as log:
          log.debug('SimpleLogger')
-     with FileLoger(level='debug', filename='file.log', include_stream=True) as log:
+     with FileLogger(level='debug', filename='file.log', include_stream=True) as log:
          log.debug('FileLogger/SimpleLogger')
-     with FileLoger(level='debug', filename='file.log', include_stream=False) as log:
+     with FileLogger(level='debug', filename='file.log', include_stream=False) as log:
          log.debug('FileLogger')
+     ```
+
+The WarningRedirector works as a context manager with both the ``FileLogger`` has beyond ``SimpleLogger`` to redirect other libraries warnings to the logging object.
+  - using the ``SimpleLogger``:
+     ```python
+     log = get_logger2(debug=True, encoding='utf-8')
+     warnings.warn('this goes to stderr')
+     with WarningRedirector(log) as warn:
+         warnings.warn('this goes to cpylog')
+     ```
+   -using the ``FileLogger``:
+     ```python
+     with FileLogger(level='debug', filename=None, include_stream=True) as log:
+        warnings.warn('this goes to stderr')
+        with WarningRedirector(log) as warn:
+            warnings.warn('this goes to cpylog')
      ```
 
 As a **bonus** (limitation?), it crashes when you have invalid logging statement.  This ensures that logging is correct, so if you switch to standard Python logging, that will also be correct.  One of the goals of this logging class is that because it implements a subset of standard Python logging, you can replace it with a standard Python log.

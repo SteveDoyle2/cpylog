@@ -73,11 +73,30 @@ class SimpleLogger:
             level of logging: 'info', 'debug', 'warning', 'error', or 'critical'
         encoding : str; default='utf-8'
             the unicode encoding method
-        log_func : log
-          funtion that will be used to print log. It should take one argument:
-          string that is produces by a logger. Default: print messages to
-          stderr using @see stderr_logging function.
+        log_func : function
+            funtion that will be used to print log. It should take:
+            type: str; default=None -> print to stdout (@see ``stdout_logging``)
+               logging level; {DEBUG, INFO, WARNING, ERROR, CRITICAL}
+            filename: str
+                the file where the log message was raised
+            lineno: int
+                the line number corresponding to the filename
+            msg: str
+                the message to log
 
+        Example
+        -------
+        >>> log1 = SimpleLogger(level: str='debug', encoding: str='utf-8',
+                                log_func=None)
+        >>> log1.info('info message')
+        INFO:  cpylog.py:100   info message
+
+        def func(typ, filename, lineno, msg):
+            print(msg)
+        >>> log2 = SimpleLogger(level: str='debug', encoding: str='utf-8',
+                                log_func=func)
+        >>> log2.info('log func message')
+        log func message
         """
         if log_func is None:
             log_func = self.stdout_logging
