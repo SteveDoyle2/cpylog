@@ -9,12 +9,13 @@ from cpylog import (
 
 from cpylog.screen_utils import write_screen
 try:
-    from cpylog.colorama_utils import write_colorama
+    from cpylog.colorama_utils import write_colorama, write_error
 except ImportError as exception:
     warnings.warn(exception)
 
+from cpylog.html_utils import str_to_html
 try:
-    from cpylog.html_utils import write_html
+    from cpylog.jupyter_utils import write_html
     HTML_PASSED = True
 except ImportError as exception:
     warnings.warn(exception)
@@ -48,6 +49,8 @@ class TestLog(unittest.TestCase):
 
         encoding = None
         write_screen(typ, name, msg, encoding)
+
+        write_error(msg)
 
     def test_file_logger(self):
         """tests also writing to a file"""
@@ -110,8 +113,9 @@ class TestLog(unittest.TestCase):
 
     def test_simple_logger_log_func(self):
         """tests using a log function"""
-        def log_func(typ, filename, n, msg):
-            print('typ=%r filename=%r n=%r msg=%r' % (typ, filename, n, msg))
+        def log_func(typ, filename, lineno, msg):
+            print('typ=%r filename=%r lineno=%r msg=%r' % (typ, filename, lineno, msg))
+            str_to_html(typ, filename, lineno, msg)
             assert typ == 'INFO', '%r' % msg
             assert msg == 'info_log_func', '%r' % msg
         log = SimpleLogger(level='info', log_func=log_func)
@@ -165,7 +169,7 @@ class TestWarningRedirector(unittest.TestCase):
         """Test ``WarningRedirector`` as a context manager."""
         log = get_logger(log=None, level='debug')
         log.info('test_log_context')
-        with WarningRedirector(log) as wr:
+        with WarningRedirector(log):
             warnings.warn('test_redirected')
         warnings.warn('test')
 
@@ -176,7 +180,7 @@ class TestWarningRedirector(unittest.TestCase):
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as log:
             log.info('test_file_context')
-            with WarningRedirector(log) as wr:
+            with WarningRedirector(log):
                 warnings.warn('test_redirected')
             warnings.warn('test')
         _remove_file(filename)
@@ -191,7 +195,7 @@ class TestWarningRedirector(unittest.TestCase):
 
         log = get_logger(log=None, level='debug')
         log.info('test_returns')
-        with WarningRedirector(log) as wr:
+        with WarningRedirector(log):
             warnings.warn('test_redirected')
         warnings.warn('default warn')
         self.assertIs(warnings.showwarning, warning_function)

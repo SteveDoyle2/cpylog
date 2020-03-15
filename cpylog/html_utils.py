@@ -14,6 +14,9 @@ COLORS = {
     'DEBUG' : DARK_ORANGE,
     'WARNING' : 'purple',
     'INFO' : 'green',
+
+    'EXCEPTION' : 'Crimson',
+    'CRITICAL' : 'Crimson',
 }
 
 def str_to_html(log_type, filename, lineno, msg):

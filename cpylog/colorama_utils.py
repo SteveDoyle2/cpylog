@@ -13,6 +13,12 @@ CYAN += Style.BRIGHT
 GREEN += Style.BRIGHT
 YELLOW += Style.BRIGHT
 
+
+def write_error(msg: str) -> None:
+    """writes an error message"""
+    sys.stdout.write(RED + msg)
+
+
 def write_colorama(typ: str, name: str, msg: str, encoding: str) -> None:
     """if we're writing to the screen"""
     try:

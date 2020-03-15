@@ -38,7 +38,7 @@ if USE_COLORAMA:
 if USE_COLORAMA:
     from cpylog.colorama_utils import write_colorama as _write
 elif USE_HTML:
-    from cpylog.html_utils import write_html as _write
+    from cpylog.jupyter_utils import write_html as _write
 else:
     from cpylog.screen_utils import write_screen as _write
 
@@ -141,8 +141,15 @@ class SimpleLogger:
         """
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
-        filename_n = f'{filename}:{lineno}'
-        msg2 = ' %-28s %s\n' % (filename_n, msg)
+        filename_lineno = f'{filename}:{lineno}'
+        msg2 = ' %-28s %s\n' % (filename_lineno, msg)
+
+        from .html_utils import str_to_html
+        try:
+            str_to_html(typ, filename, lineno, msg2)
+        except:
+            print(typ, filename, lineno, msg2, type(msg2))
+            raise
 
         _write(typ, name, msg2, self.encoding)
         #sys.stdout.flush()
@@ -165,9 +172,9 @@ class SimpleLogger:
         """
         if not self._active:
             return
-        n, filename = properties(nframe=nframe)
-        self.log_func(typ, filename, n, msg)
-        #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, n, msg))
+        lineno, filename = properties(nframe=nframe)
+        self.log_func(typ, filename, lineno, msg)
+        #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, lineno, msg))
 
     def simple_msg(self, msg: str, typ: Optional[str]=None) -> None:
         """
@@ -227,7 +234,7 @@ class SimpleLogger:
             message to be logged
 
         """
-        if self.level in ('error', 'critical'):
+        if self.level in {'error', 'critical'}:
             return
         assert msg is not None, msg
         self.msg_typ('WARNING', msg)
@@ -242,7 +249,7 @@ class SimpleLogger:
             message to be logged
 
         """
-        if self.level in ('error', 'critical'):
+        if self.level in {'error', 'critical'}:
             return
         assert msg is not None, msg
         self.msg_typ('ERROR', msg)
@@ -334,10 +341,6 @@ def get_logger2(log=None, debug=True, encoding='utf-8') -> SimpleLogger:
         log = SimpleLogger(level, encoding=encoding)
     return log
 
-def write_error(msg: str) -> None:
-    """writes an error message"""
-    sys.stdout.write(RED + msg)
-
 
 class FileLogger(SimpleLogger):
     def __init__(self, level='debug', encoding='utf-8', filename=None, include_stream=True, log_func=None):
@@ -394,9 +397,9 @@ class FileLogger(SimpleLogger):
             message to be logged
 
         """
-        n, filename = properties()
+        lineno, filename = properties()
         for log_func in self.loggers:
-            log_func(typ, filename, n, msg)
+            log_func(typ, filename, lineno, msg)
 
     def file_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
         """
@@ -427,7 +430,7 @@ class FileLogger(SimpleLogger):
 
 if __name__ == '__main__':  # pragma: no cover
     # how to use a simple logger
-    for debug_level in ['debug', 'info']:
+    for debug_level in {'debug', 'info'}:
         #print('--- %s logger ---' % debug_level)
         test_log = SimpleLogger(debug_level, encoding='utf-8')
         test_log.debug('debug message')
