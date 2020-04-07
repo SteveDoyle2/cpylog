@@ -39,6 +39,15 @@ class TestLog(unittest.TestCase):
         encoding = None
         write_html(typ, name, msg, encoding)
 
+    def test_colorama(self):
+        """tests colorama"""
+        typ = 'CAT'
+        name = 'name: '
+        msg = 'msg'
+        encoding = 'pig'
+        write_colorama(typ, name, msg, encoding)
+        write_error(msg)
+
     def test_screen_write(self):
         """tests writing to the screen"""
         typ = 'CAT'
@@ -49,8 +58,6 @@ class TestLog(unittest.TestCase):
 
         encoding = None
         write_screen(typ, name, msg, encoding)
-
-        write_error(msg)
 
     def test_file_logger(self):
         """tests also writing to a file"""

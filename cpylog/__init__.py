@@ -11,7 +11,7 @@ __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
 __license__ = 'BSD-3'
-__author__ = ''
+__author__ = 'Steven Doyle'
 __email__ = ''
 
 # True if writing to screen
