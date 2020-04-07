@@ -6,7 +6,7 @@ from typing import Optional
 from cpylog.utils import ipython_info, properties # , get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.4.0'
+__version__ = '1.4.1'
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'

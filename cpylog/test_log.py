@@ -10,8 +10,10 @@ from cpylog import (
 from cpylog.screen_utils import write_screen
 try:
     from cpylog.colorama_utils import write_colorama, write_error
+    IS_COLORAMA = True
 except ImportError as exception:
     warnings.warn(exception)
+    IS_COLORAMA = False
 
 from cpylog.html_utils import str_to_html
 try:
@@ -39,6 +41,7 @@ class TestLog(unittest.TestCase):
         encoding = None
         write_html(typ, name, msg, encoding)
 
+    @unittest.skipIf(IS_COLORAMA == False, 'colorama import failed')
     def test_colorama(self):
         """tests colorama"""
         typ = 'CAT'
