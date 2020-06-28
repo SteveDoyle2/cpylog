@@ -6,7 +6,7 @@ from typing import Optional
 from cpylog.utils import ipython_info, properties # , get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.4.1'
+__version__ = '1.4.1'  # 1.4.0 is latest
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -66,6 +66,8 @@ class SimpleLogger:
     def __init__(self, level: str='debug', encoding: str='utf-8',
                  log_func=None) -> None:
         """
+        Creates a SimpleLogger
+
         Parameters
         ----------
         level : str
@@ -96,6 +98,7 @@ class SimpleLogger:
                                 log_func=func)
         >>> log2.info('log func message')
         log func message
+
         """
         if log_func is None:
             log_func = self.stdout_logging
@@ -144,12 +147,12 @@ class SimpleLogger:
         filename_lineno = f'{filename}:{lineno}'
         msg2 = ' %-28s %s\n' % (filename_lineno, msg)
 
-        from .html_utils import str_to_html
-        try:
-            str_to_html(typ, filename, lineno, msg2)
-        except:
-            print(typ, filename, lineno, msg2, type(msg2))
-            raise
+        #from .html_utils import str_to_html
+        #try:
+            #str_to_html(typ, filename, lineno, msg2)
+        #except:
+            #print(typ, filename, lineno, msg2, type(msg2))
+            #raise
 
         _write(typ, name, msg2, self.encoding)
         #sys.stdout.flush()
@@ -167,7 +170,6 @@ class SimpleLogger:
         nframe : int; default=3
             the number of log levels to jump
             should be 3+
-
 
         """
         if not self._active:
@@ -302,6 +304,7 @@ def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLog
     -------
     log : SimpleLogger
         a logger object
+
     """
     assert not isinstance(log, str), log
     return SimpleLogger(level, encoding=encoding) if log is None else log
@@ -343,7 +346,47 @@ def get_logger2(log=None, debug=True, encoding='utf-8') -> SimpleLogger:
 
 
 class FileLogger(SimpleLogger):
-    def __init__(self, level='debug', encoding='utf-8', filename=None, include_stream=True, log_func=None):
+    def __init__(self, level: str='debug', encoding: str='utf-8',
+                 filename: Optional[str]=None,
+                 include_stream: bool=True,
+                 log_func=None):
+        """
+                Parameters
+        ----------
+        level : str
+            level of logging: 'info', 'debug', 'warning', 'error', or 'critical'
+        encoding : str; default='utf-8'
+            the unicode encoding method
+        filename : str; default=None
+            str : write to a file
+        include_stream : bool
+            write to the screen (e.g., use the classic simpleLogger)
+        log_func : function
+            funtion that will be used to print log. It should take:
+            type: str; default=None -> print to stdout (@see ``stdout_logging``)
+               logging level; {DEBUG, INFO, WARNING, ERROR, CRITICAL}
+            filename: str
+                the file where the log message was raised
+            lineno: int
+                the line number corresponding to the filename
+            msg: str
+                the message to log
+
+        Example
+        -------
+        >>> log1 = FileLogger(level: str='debug', encoding: str='utf-8',
+                              log_func=None)
+        >>> log1.info('info message')
+        INFO:  cpylog.py:100   info message
+
+        def func(typ, filename, lineno, msg):
+            print(msg)
+        >>> log2 = FileLogger(level: str='debug', encoding: str='utf-8',
+                              log_func=func)
+        >>> log2.info('log func message')
+        log func message
+
+        """
         SimpleLogger.__init__(self, level=level, encoding=encoding, log_func=None)
 
         self.include_stream = include_stream
@@ -368,8 +411,10 @@ class FileLogger(SimpleLogger):
         #self.debug(str(self))
 
 
-    def __repr__(self):
-        return f'FileLogger(level={self.level!r}, filename={self._filename}, include_stream={self.include_stream}, encoding={self.encoding!r})'
+    def __repr__(self) -> str:
+        msg = (f'FileLogger(level={self.level!r}, filename={self._filename}, '
+               f'include_stream={self.include_stream}, encoding={self.encoding!r})')
+        return msg
 
     def __del__(self):
         #print('del...')
