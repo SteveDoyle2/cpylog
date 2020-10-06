@@ -29,6 +29,11 @@ matrix:
 
     #--------------------------------------------------------------------------------------------------
       # without psutil
+    - name: "Python 3.9"
+      python: '3.9'
+      env:
+      - PKGS=''
+
     - name: "Python 3.8"
       python: '3.8'
       env:
@@ -57,7 +62,7 @@ install:
 #===install dependencies===
 #-----------pip------------
   - if [ ${PKGS} != "" ];
-        then python pip install ${PKGS}; 
+        then python pip install ${PKGS};
     fi
   - pip list
 #----------run-----------

@@ -6,7 +6,7 @@ from typing import Optional
 from cpylog.utils import ipython_info, properties # , get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.4.1'  # 1.4.0 is latest
+__version__ = '1.5.0'  # 1.4.0 is latest released
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -108,6 +108,7 @@ class SimpleLogger:
         self.log_func = log_func
         self.encoding = encoding
         self._active = True
+        self._level_filename_fmt = ' %-28s %s\n'
         assert isinstance(encoding, str), type(encoding)
 
     def set_enabled(self, enabled: bool) -> None:
@@ -145,7 +146,7 @@ class SimpleLogger:
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
         filename_lineno = f'{filename}:{lineno}'
-        msg2 = ' %-28s %s\n' % (filename_lineno, msg)
+        msg2 = self._level_filename_fmt % (filename_lineno, msg)
 
         #from .html_utils import str_to_html
         #try:
@@ -281,6 +282,15 @@ class SimpleLogger:
         """
         assert msg is not None, msg
         self.msg_typ('CRITICAL', msg)
+
+    #def __enter__(self):
+        #return self.file_obj
+    #def __exit__(self, type, value, traceback):
+        #if USE_COLORAMA:
+            #from colorama import Style
+            #print(Style.RESET_ALL)
+            #print("ending...")
+        #return True
 
     def __repr__(self):
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
