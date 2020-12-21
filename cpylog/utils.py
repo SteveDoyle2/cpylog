@@ -2,6 +2,7 @@
 import sys
 import os
 from typing import Optional, Tuple
+from pathlib import Path
 
 def ipython_info() -> Optional[str]:
     """determines if iPython/Jupyter notebook is running"""
@@ -104,3 +105,39 @@ def properties(nframe: int=3) -> Tuple[int, str]:
     if active_file.endswith('.pyc'):
         return frame.f_lineno, active_file[:-1]
     return frame.f_lineno, active_file
+
+def properties2(nframe: int=3, dframe: int=0) -> Tuple[int, str]:
+    """
+    Gets frame information
+
+    Parameters
+    ----------
+    nframe : int; default=3
+        the number of frames to jump back
+        0 = current
+        2 = calling from an embedded function (e.g., log_msg)
+        3 = calling from an embedded class (e.g., SimpleLogger)
+
+    Returns
+    -------
+    line number : int
+        the line number of the nth frame
+    filename : str
+        the filen ame of the nth frame
+    """
+    fnamesi = []
+    frame = sys._getframe(nframe)
+    active_file = os.path.abspath(frame.f_globals['__file__'])
+    base_file = os.path.basename(active_file)
+    dirname = os.path.dirname(active_file)
+
+    if dframe == 0:
+        pass
+    elif dframe == 1:
+        fnamesi.append(os.path.basename(dirname))
+    else:
+        parts = Path(dirname).parts[-dframe:]
+        fnamesi.extend(parts)
+    fnamesi.append(base_file[:-1] if base_file.endswith('.pyc')
+                   else base_file)
+    return frame.f_lineno, '/'.join(fnamesi)
