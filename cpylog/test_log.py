@@ -68,7 +68,7 @@ class TestLog(unittest.TestCase):
         _remove_file(filename)
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
-            assert str(test_log) == "FileLogger(level='debug', filename=file_logger_1.log, include_stream=True, encoding='utf-8')"
+            assert str(test_log) == "FileLogger(level='debug', filename=file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
             test_log.warning('warning')
             test_log.error('errors')

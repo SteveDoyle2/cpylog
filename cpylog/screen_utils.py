@@ -12,4 +12,7 @@ def write_screen(typ: str, name: str, msg: str, encoding: str) -> None:
 
     #msg_all = (timestring + name + msg) if typ else timestring + msg
     #sys.stdout.write(msg_all)
+    #if 'Creating an ndarray from ragged nested sequences' in msg:
+        #asdf
+
     sys.stdout.write((name + msg) if typ else msg)

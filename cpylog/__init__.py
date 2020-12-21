@@ -390,6 +390,8 @@ class FileLogger(SimpleLogger):
             str : write to a file
         include_stream : bool
             write to the screen (e.g., use the classic simpleLogger)
+        nlevels : int; default=1
+            the number of levels to show
         log_func : function
             funtion that will be used to print log. It should take:
             type: str; default=None -> print to stdout (@see ``stdout_logging``)
@@ -443,7 +445,7 @@ class FileLogger(SimpleLogger):
 
     def __repr__(self) -> str:
         msg = (f'FileLogger(level={self.level!r}, filename={self._filename}, '
-               f'include_stream={self.include_stream}, encoding={self.encoding!r}, nlevels={nlevels})')
+               f'include_stream={self.include_stream}, encoding={self.encoding!r}, nlevels={self._nlevels})')
         return msg
 
     def __del__(self):
