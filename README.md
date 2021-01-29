@@ -1,10 +1,18 @@
 # cpylog
+
 A simple pure python colorama/HTML capable logger
+
+Download the latest:  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) 
+
 
 This is a library for creating a limited pure Python (3.7+) version of the standard logging object.  There are 3 main classes:
  - ``SimpleLogger``
  - ``FileLogger`` (new in v1.1)
  - ``WarningRedirector`` (new in v1.3)
+
+And a few functions:
+ - ``get_logger``
+ - ``log_exc`` (new in v1.5)
 
 ``SimpleLogger`` is **limited** in that:
  - no handlers
@@ -83,11 +91,9 @@ def log_func(typ, filename, n, msg):
 log_func = SimpleLogger(level='info', log_func=log_func)
 ```
 
-|  Version  | Docs  | Status |
-| :--- 	  | :--- 	  | :--- 	  |
-|   Master | [![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest) | [![Linux Status](https://img.shields.io/travis/cpylog/cpylog/master.svg)](https://travis-ci.org/cpylog/cpylog) ![Coverage Status](https://coveralls.io/repos/github/cpylog/cpylog/badge.svg?branch=master) |
-|  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) | docs | [![Build Status](https://img.shields.io/travis/cpylog/cpylog/v1.0.svg)](https://travis-ci.org/cpylog/cpylog) [![Coverage Status](https://img.shields.io/coveralls/cpylog/cpylog/v1.0.svg)](https://coveralls.io/github/cpylog/cpylog?branch=v1.0) |
-
+**Main/dev** 
+[![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest)        [![Linux Status](https://github.com/SteveDoyle2/cpylog/workflows/CI/badge.svg)](https://github.com/SteveDoyle2/cpylog/actions?query=workflow%3ACI+branch%3Amaster) 
+[![Coverage Status](https://codecov.io/github/SteveDoyle2/cpylog/coverage.svg?branch=master)](https://codecov.io/gh/SteveDoyle2/cpylog)
 
 <!---
 [![Windows Status](https://ci.appveyor.com/api/projects/status/1qau107h43mbgghi/branch/master?svg=true)](https://ci.appveyor.com/project/cpylog/cpylog)
