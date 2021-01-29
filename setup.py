@@ -17,12 +17,17 @@ packages = find_packages() # exclude=['ez_setup', 'examples', 'tests'] + exclude
     #'APPVEYOR' in os.environ or
     #'READTHEDOCS' in os.environ
 #)
-is_travis = 'TRAVIS' in os.environ
+IS_DEV = (
+    'TRAVIS' in os.environ or
+    'APPVEYOR' in os.environ or
+    #'READTHEDOCS' in os.environ or
+    'GITHUB_ACTOR' in os.environ
+)
 #is_rtd = 'READTHEDOCS' in os.environ
 
 install_requires = []
 is_windows = 'nt' in os.name
-if is_travis and not is_windows:
+if is_ci and not is_windows:
     #install_requires.append('python-coveralls')
     install_requires.append('codecov')
     #install_requires.append('coverage')
