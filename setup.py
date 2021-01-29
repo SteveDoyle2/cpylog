@@ -27,7 +27,7 @@ IS_DEV = (
 
 install_requires = []
 is_windows = 'nt' in os.name
-if is_ci and not is_windows:
+if IS_DEV and not is_windows:
     #install_requires.append('python-coveralls')
     install_requires.append('codecov')
     #install_requires.append('coverage')
