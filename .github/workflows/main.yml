@@ -101,7 +101,7 @@ jobs:
       - name: Install latest packages - ${{ matrix.mode }}
         if: ${{ matrix.mode == 'latest_colorama' }}
         run: |
-          pip install colorama
+          pip install colorama ipython
 
 #-----------------------------------------------------------------------------------
 
