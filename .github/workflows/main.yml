@@ -33,14 +33,14 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, windows-latest]
     strategy:
       matrix:
          #python-version: [3.9]  # testing
          python-version: [3.7, 3.8, 3.9]   # TODO: should be enabled...disabled for testing...
          os: [ubuntu-latest]
          # , macos-latest, windows-latest
-         mode: ['latest', 'latest_colorama', 'windows-latest_colorama']
+         mode: ['latest', 'latest_colorama'] # , 'windows-latest_colorama'
          #include:
          #- node: 13
          #  os: ubuntu-18.04
