@@ -4,7 +4,7 @@ import warnings
 import unittest
 
 from cpylog import (
-    SimpleLogger, FileLogger, get_logger, get_logger2,
+    SimpleLogger, FileLogger, get_logger, get_logger2, log_exc,
     WarningRedirector, USE_HTML)
 
 from cpylog.screen_utils import write_screen
@@ -41,7 +41,7 @@ class TestLog(unittest.TestCase):
         encoding = None
         write_html(typ, name, msg, encoding)
 
-    @unittest.skipIf(IS_COLORAMA == False, 'colorama import failed')
+    @unittest.skipIf(IS_COLORAMA is False, 'colorama import failed')
     def test_colorama(self):
         """tests colorama"""
         typ = 'CAT'
@@ -171,6 +171,15 @@ class TestLog(unittest.TestCase):
         with self.assertRaises(AttributeError):
             log3.bad('bad')
 
+    def test_log_exc(self):
+        """tests ``log_exc``"""
+        log = SimpleLogger(level='info')
+        with self.assertRaises(TypeError):
+            try:
+                1 + 'cat'
+            except TypeError:
+                log_exc(log, limit=None, chain=True)
+                raise
 
 class TestWarningRedirector(unittest.TestCase):
     """Test for ``WarningRedirector``."""

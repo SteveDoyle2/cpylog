@@ -2,7 +2,8 @@
 # coding: utf-8
 import sys
 import os
-from typing import Optional
+import traceback
+from typing import Union, Optional
 from cpylog.utils import ipython_info, properties, properties2 # , get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
@@ -310,7 +311,9 @@ class SimpleLogger:
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
 
 
-def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLogger:
+def get_logger(log: Optional[SimpleLogger]=None,
+               level: str='debug',
+               encoding: str='utf-8') -> SimpleLogger:
     """
     This function is useful as it will instantiate a simpleLogger object
     if log=None.
@@ -334,7 +337,10 @@ def get_logger(log=None, level: str='debug', encoding: str='utf-8') -> SimpleLog
     return SimpleLogger(level, encoding=encoding) if log is None else log
 
 
-def get_logger2(log=None, debug=True, encoding='utf-8', nlevels: int=1) -> SimpleLogger:
+def get_logger2(log=None,
+                debug: Union[str, bool]=True,
+                encoding='utf-8',
+                nlevels: int=1) -> SimpleLogger:
     """
     This function is useful as it will instantiate a SimpleLogger object
     if log=None.
@@ -345,11 +351,12 @@ def get_logger2(log=None, debug=True, encoding='utf-8', nlevels: int=1) -> Simpl
         a python logging module object;
         if log is set, debug is ignored and uses the
         settings the logging object has
-    debug : bool / None
+    debug : str / bool / None; default=True
        used to set the logger if no logger is passed in
-           True:  logs debug/info/warning/error messages
-           False: logs info/warning/error messages
-           None:  logs warning/error messages
+           True:  logs debug/info/warning/error messages ('debug' level)
+           False: logs info/warning/error messages ('info' level)
+           None:  logs warning/error messages ('warning level')
+           str:   one of: 'debug', 'info', 'warning', 'error', 'critical'
     encoding : str; default='utf-8'
         the unicode encoding method
     nlevels : int; default=1
@@ -365,6 +372,8 @@ def get_logger2(log=None, debug=True, encoding='utf-8', nlevels: int=1) -> Simpl
         pass
     elif debug is None:
         log = SimpleLogger('warning', encoding=encoding, nlevels=nlevels)
+    elif isinstance(debug, str):
+        log = SimpleLogger(level, encoding=encoding, nlevels=nlevels)
     else:
         level = 'debug' if debug else 'info'
         log = SimpleLogger(level, encoding=encoding, nlevels=nlevels)
@@ -503,6 +512,29 @@ class FileLogger(SimpleLogger):
 
         #print('file name=%r msg=%r' % (name, msg))
         self._file.write((name + msg) if typ else msg)
+
+def log_exc(log: SimpleLogger, limit=None, chain: bool=True):
+    """Shorthand for 'log_exception(log, *sys.exc_info(), limit)'."""
+    log_exception(log, *sys.exc_info(), limit=limit, chain=chain)
+
+def log_exception(log: SimpleLogger, etype, value, tb, limit=None, chain: bool=True):
+    """Print exception up to 'limit' stack trace entries from 'tb' to 'log'.
+
+    This differs from print_tb() in the following ways:
+      (1) if traceback is not None, it prints a header "Traceback (most
+          recent call last):"
+      (2) it logs the exception type and value after the stack trace
+      (3) if type is SyntaxError and value has the appropriate format,
+          it logs the line where the syntax error occurred with a
+          caret on the next line indicating the approximate position
+          of the error.
+
+    """
+    lines = []
+    for line in traceback.TracebackException(
+            type(value), value, tb, limit=limit).format(chain=chain):
+        lines.append(line)
+    log.error('\n' + ''.join(lines))
 
 
 if __name__ == '__main__':  # pragma: no cover
