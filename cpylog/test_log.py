@@ -6,6 +6,7 @@ import unittest
 from cpylog import (
     SimpleLogger, FileLogger, get_logger, get_logger2, log_exc,
     WarningRedirector, USE_HTML)
+from cpylog.utils import get_default_session
 
 from cpylog.screen_utils import write_screen
 try:
@@ -180,6 +181,11 @@ class TestLog(unittest.TestCase):
             except TypeError:
                 log_exc(log, limit=None, chain=True)
                 raise
+    def test_default_session(self):
+        """tests ``get_default_session``"""
+        shell = get_default_session()
+        #assert shell in ('cmd.exe', 'powershell.exe', 'sh', 'WindowsTerminal.exe'), 'shell=%r' % shell
+        print('shell', shell)
 
 class TestWarningRedirector(unittest.TestCase):
     """Test for ``WarningRedirector``."""
