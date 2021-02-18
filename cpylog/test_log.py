@@ -24,6 +24,8 @@ except ImportError as exception:
     warnings.warn(exception)
     HTML_PASSED = False
 
+dirname = os.path.dirname(__file__)
+
 class TestLog(unittest.TestCase):
     """tests the SimpleLogger and FileLogger classes"""
     #def test_multi_logger(self):
@@ -65,25 +67,25 @@ class TestLog(unittest.TestCase):
 
     def test_file_logger(self):
         """tests also writing to a file"""
-        filename = 'file_logger_1.log'
+        filename = os.path.join(dirname, 'file_logger_1.log')
         _remove_file(filename)
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
-            assert str(test_log) == "FileLogger(level='debug', filename=file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+            assert str(test_log) == r"FileLogger(level='debug', filename=.\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
             test_log.warning('warning')
             test_log.error('errors')
             test_log.exception('exception')
-        os.remove(filename)
+        #os.remove(filename)
 
-        filename = 'file_logger_2.log'
+        filename = os.path.join(dirname, 'file_logger_2.log')
         _remove_file(filename)
         with FileLogger(level='debug', filename=filename, include_stream=False,
                         encoding='utf-8') as test_log2:
             test_log2.debug('no streamer')
         os.remove(filename)
 
-        filename = 'file_logger_3.log'
+        filename = os.path.join(dirname, 'file_logger_3.log')
         _remove_file(filename)
         test_log2 = FileLogger(level='debug', filename=filename, include_stream=False,
                                encoding='utf-8')

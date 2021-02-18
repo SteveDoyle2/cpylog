@@ -34,7 +34,6 @@ if USE_COLORAMA:
     except ImportError:
         IS_COLORAMA = False
     USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
-#print(sys.modules)
 
 if USE_COLORAMA:
     from cpylog.colorama_utils import write_colorama as _write
@@ -311,6 +310,32 @@ class SimpleLogger:
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
 
 
+def properties(nframe=3):
+    """
+    Gets frame information
+
+    Parameters
+    ----------
+    nframe : int; default=3
+        the number of frames to jump back
+        0 = current
+        2 = calling from an embedded function (e.g., log_msg)
+        3 = calling from an embedded class (e.g., SimpleLogger)
+
+    Returns
+    -------
+    line number : int
+        the line number of the nth frame
+    filename : str
+        the filen ame of the nth frame
+    """
+    # jump to get out of the logger code
+    frame = sys._getframe(nframe)
+    active_file = os.path.basename(frame.f_globals['__file__'])
+    if active_file.endswith('.pyc'):
+        return frame.f_lineno, active_file[:-1]
+    return frame.f_lineno, active_file
+
 def get_logger(log: Optional[SimpleLogger]=None,
                level: str='debug',
                encoding: str='utf-8') -> SimpleLogger:
@@ -512,6 +537,7 @@ class FileLogger(SimpleLogger):
 
         #print('file name=%r msg=%r' % (name, msg))
         self._file.write((name + msg) if typ else msg)
+        self._file.write('\n')
 
 def log_exc(log: SimpleLogger, limit=None, chain: bool=True):
     """Shorthand for 'log_exception(log, *sys.exc_info(), limit)'."""
