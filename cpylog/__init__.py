@@ -536,8 +536,10 @@ class FileLogger(SimpleLogger):
         #msg2 = ' %-28s %s\n' % (filename_n, msg)
 
         #print('file name=%r msg=%r' % (name, msg))
-        self._file.write((name + msg) if typ else msg)
-        self._file.write('\n')
+        filename_lineno = f'{filename}:{lineno}'
+        msg2 = self._level_filename_fmt % (filename_lineno, msg)
+        self._file.write((name + msg2) if typ else msg2)
+        self._file.flush()
 
 def log_exc(log: SimpleLogger, limit=None, chain: bool=True):
     """Shorthand for 'log_exception(log, *sys.exc_info(), limit)'."""
