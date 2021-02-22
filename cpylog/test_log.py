@@ -25,6 +25,7 @@ except ImportError as exception:
     HTML_PASSED = False
 
 dirname = os.path.dirname(__file__)
+is_github = True
 
 class TestLog(unittest.TestCase):
     """tests the SimpleLogger and FileLogger classes"""
@@ -71,7 +72,10 @@ class TestLog(unittest.TestCase):
         _remove_file(filename)
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
-            assert str(test_log) == r"FileLogger(level='debug', filename=.\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+            if is_github:
+                assert str(test_log) == r"FileLogger(level='debug', filename=.\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+            else:
+                assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
             test_log.warning('warning')
             test_log.error('errors')
