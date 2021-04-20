@@ -86,7 +86,7 @@ class TestLog(unittest.TestCase):
                         encoding='utf-8') as test_log:
             if is_continuous_integration:
                 norm_path = f'cpylog{os.sep}file_logger_1.log'
-                expected_log = r"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+                expected_log = rf"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             else:
                 norm_path = os.path.join(dirname, 'file_logger_1.log')
                 expected_log = rf"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)"
