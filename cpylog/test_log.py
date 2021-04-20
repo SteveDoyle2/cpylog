@@ -97,7 +97,9 @@ class TestLog(unittest.TestCase):
             # linux local:   "FileLogger(level='debug', filename=./file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
             # linux root:    "FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
             #print('actual_log: %r' % actual_log)
-            assert actual_log == expected_log, f'\nactual:   {actual_log}\nexpected: {expected_log}'
+            if not actual_log == expected_log:
+                msg = f'\nactual:   {actual_log}\nexpected: {expected_log}'
+                test_log.error(msg)
             #else:
                 #assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
