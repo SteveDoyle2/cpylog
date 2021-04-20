@@ -124,6 +124,7 @@ def properties2(nframe: int=3, dframe: int=0) -> Tuple[int, str]:
         the line number of the nth frame
     filename : str
         the filen ame of the nth frame
+
     """
     fnamesi = []
     frame = sys._getframe(nframe)

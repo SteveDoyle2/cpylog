@@ -328,6 +328,7 @@ def properties(nframe=3):
         the line number of the nth frame
     filename : str
         the filen ame of the nth frame
+
     """
     # jump to get out of the logger code
     frame = sys._getframe(nframe)
@@ -409,6 +410,7 @@ class FileLogger(SimpleLogger):
     def __init__(self, level: str='debug', encoding: str='utf-8',
                  nlevels: int=1,
                  filename: Optional[str]=None,
+                 mode: str='w',
                  include_stream: bool=True,
                  log_func=None):
         """
@@ -462,15 +464,18 @@ class FileLogger(SimpleLogger):
 
         is_file_logger = filename is not None
         assert include_stream or is_file_logger, 'a print stream or file must be included'
+        if filename is not None:
+            dirname = os.path.dirname(filename)
+            assert os.path.exists(dirname), dirname
 
         if include_stream and is_file_logger:
             self.loggers.append(self.log_func)
-            self._file = open(filename, 'w', encoding=encoding)
+            self._file = open(filename, mode, encoding=encoding)
             self.loggers.append(self.file_logging)
             self.msg_typ = self.msg_typ_file
         elif is_file_logger:
             #print(f'only using a file; include_stream={include_stream} is_file_logger={is_file_logger} filename={filename}')
-            self._file = open(filename, 'w', encoding=encoding)
+            self._file = open(filename, mode, encoding=encoding)
             self.log_func = self.file_logging
         #else:
             #print(f'only using a streamer; include_stream={include_stream} is_file_logger={is_file_logger} filename={filename}')
