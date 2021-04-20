@@ -3,6 +3,7 @@ import os
 import warnings
 import unittest
 
+import cpylog
 from cpylog import (
     SimpleLogger, FileLogger, get_logger, get_logger2, log_exc,
     WarningRedirector, USE_HTML)
@@ -24,7 +25,10 @@ except ImportError as exception:
     warnings.warn(exception)
     HTML_PASSED = False
 
+PKG_PATH = cpylog.__path__[0]
 dirname = os.path.dirname(__file__)
+if dirname == '':
+    dirname = '.'
 is_github = True
 
 class TestLog(unittest.TestCase):
@@ -68,14 +72,19 @@ class TestLog(unittest.TestCase):
 
     def test_file_logger(self):
         """tests also writing to a file"""
+        #dirname = '.' # os.path.relpath(os.path.dirname(PKG_PATH), os.getcwd())
         filename = os.path.join(dirname, 'file_logger_1.log')
         _remove_file(filename)
+
+        print('dirname=', dirname)
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
-            if is_github:
-                assert str(test_log) == r"FileLogger(level='debug', filename=.\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
-            else:
-                assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+            print(str(test_log))
+            #if is_github:
+            expected_log = rf"FileLogger(level='debug', filename={dirname}\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            assert str(test_log) == expected_log, str(test_log)
+            #else:
+                #assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
             test_log.warning('warning')
             test_log.error('errors')
@@ -131,7 +140,7 @@ class TestLog(unittest.TestCase):
     def test_simple_logger_log_func(self):
         """tests using a log function"""
         def log_func(typ, filename, lineno, msg):
-            print('typ=%r filename=%r lineno=%r msg=%r' % (typ, filename, lineno, msg))
+            #print('typ=%r filename=%r lineno=%r msg=%r' % (typ, filename, lineno, msg))
             str_to_html(typ, filename, lineno, msg)
             assert typ == 'INFO', '%r' % msg
             assert msg == 'info_log_func', '%r' % msg

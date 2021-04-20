@@ -465,7 +465,7 @@ class FileLogger(SimpleLogger):
         is_file_logger = filename is not None
         assert include_stream or is_file_logger, 'a print stream or file must be included'
         if filename is not None:
-            dirname = os.path.dirname(filename)
+            dirname = os.path.dirname(os.path.abspath(filename))
             assert os.path.exists(dirname), dirname
 
         if include_stream and is_file_logger:
