@@ -81,7 +81,8 @@ class TestLog(unittest.TestCase):
                         encoding='utf-8') as test_log:
             print(str(test_log))
             #if is_github:
-            expected_log = rf"FileLogger(level='debug', filename={dirname}\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            norm_path = os.path.join(dirname, 'file_logger_1.log')
+            expected_log = rf"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)"
             assert str(test_log) == expected_log, str(test_log)
             #else:
                 #assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
