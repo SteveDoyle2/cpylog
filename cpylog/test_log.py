@@ -29,7 +29,12 @@ PKG_PATH = cpylog.__path__[0]
 dirname = os.path.dirname(__file__)
 if dirname == '':
     dirname = '.'
-is_github = True
+
+is_continuous_integration = (
+    'TRAVIS' in os.environ or
+    'TRAVIS_PYTHON_VERSION' in os.environ or
+    'GITHUB_ACTOR' in os.environ
+)
 
 class TestLog(unittest.TestCase):
     """tests the SimpleLogger and FileLogger classes"""
@@ -79,11 +84,19 @@ class TestLog(unittest.TestCase):
         print('dirname=', dirname)
         with FileLogger(level='debug', filename=filename, include_stream=True,
                         encoding='utf-8') as test_log:
-            print(str(test_log))
-            #if is_github:
-            norm_path = os.path.join(dirname, 'file_logger_1.log')
-            expected_log = rf"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)"
-            assert str(test_log) == expected_log, str(test_log)
+            if is_continuous_integration:
+                expected_log = r"FileLogger(level='debug', filename=.\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
+            else:
+                norm_path = os.path.join(dirname, 'file_logger_1.log')
+                expected_log = rf"FileLogger(level='debug', filename={norm_path}, include_stream=True, encoding='utf-8', nlevels=1)"
+
+            actual_log = str(test_log)
+            # windows local: "FileLogger(level='debug', filename=.\\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            # windows root:  "FileLogger(level='debug', filename=.\\cpylog\\file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            # linux local:   "FileLogger(level='debug', filename=./file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            # linux root:    "FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)"
+            #print('actual_log: %r' % actual_log)
+            assert actual_log == expected_log, f'\nactual:   {actual_log}\nexpected: {expected_log}'
             #else:
                 #assert str(test_log) == r"FileLogger(level='debug', filename=cpylog/file_logger_1.log, include_stream=True, encoding='utf-8', nlevels=1)", str(test_log)
             test_log.debug('debug message')
