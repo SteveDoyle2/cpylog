@@ -11,13 +11,10 @@ def ipython_info() -> Optional[str]:
     try:
         ipython = get_ipython()
 
-        # Spyder 4.0 doesn't support HTML objects.
-        # we're crossing our fingers that Spyder 4.1 does...
-        if 'spyder' in sys.modules and 'spyder_kernels' in sys.modules:
-            import spyder
-            spyder_version = spyder.__version__
-            if spyder_version < '4.1':
-                return None
+        # Spyder doesn't support HTML objects.
+        # Check for spyder in order to fall back on Colorama
+        if 'SPY_PYTHONPATH' in os.environ:
+            return None
         return ipython
     except NameError:
         return None
