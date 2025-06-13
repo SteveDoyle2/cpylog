@@ -1,4 +1,5 @@
-from IPython.core.display import display, HTML
+from IPython.display import display, HTML
+#from IPython.core.display import display, HTML  # old
 
 WARNING_TO_COLOR_MAP = {
     'DEBUG' : 'blue',

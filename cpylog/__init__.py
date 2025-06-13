@@ -4,10 +4,12 @@ import sys
 import os
 import traceback
 from typing import Union, Optional
-from cpylog.utils import ipython_info, properties, properties2 # , get_default_session
+from cpylog.utils import (
+    ipython_info, properties, properties2,
+    get_frame_file_from_frame)  # get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.5.0'  # 1.4.0 is latest released
+__version__ = '1.6.0'  # 1.5.0 is latest released
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -207,7 +209,8 @@ class SimpleLogger:
         """
         frame = sys._getframe(2)  # jump to get out of the logger code
         lineno = frame.f_lineno
-        filename = os.path.basename(frame.f_globals['__file__'])
+        frame_file = get_frame_file_from_frame(frame)
+        filename = os.path.basename(frame_file)
 
         assert msg is not None, msg
         self.log_func(typ, filename, lineno, msg)
@@ -332,7 +335,8 @@ def properties(nframe=3):
     """
     # jump to get out of the logger code
     frame = sys._getframe(nframe)
-    active_file = os.path.basename(frame.f_globals['__file__'])
+    frame_file = get_frame_file_from_frame(frame)
+    active_file = os.path.basename(frame_file)
     if active_file.endswith('.pyc'):
         return frame.f_lineno, active_file[:-1]
     return frame.f_lineno, active_file

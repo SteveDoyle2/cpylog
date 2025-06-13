@@ -1,0 +1,104 @@
+# https://peps.python.org/pep-0621/
+# pip wheel . --no-build-isolation -vvv
+
+#-------------------------------------------------------------------------------------------
+[project]
+name = "cpylog"
+version = "1.6.0"
+description = "A simple pure python colorama/HTML capable logger"
+
+authors = [
+    {name = "Steve Doyle"},
+    #{name = "Steve Doyle", email="asdf@gmail.com"},
+    #{email = "info@example.com"}
+]
+#license = {file = "LICENSE.txt"}
+#readme = {file = "README.md"}  # doesn't work
+#readme = "various tools"       # it's looking for a file
+#readme = "README.md"           # doesn't work
+
+requires-python = ">=3.10"
+
+#keywords = ["packaging", "dependency", "infer", "pyproject.toml"]
+
+classifiers = [
+    "Topic :: Software Development",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD-3",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# Requirements: This is done differently by poetry!
+dependencies = [
+]
+#-------------------------------------------------------------------------------------------
+[project.optional-dependencies]
+#dev = [
+#    #"black>=23",
+#]
+
+#dev = [
+#    #"dynomite[all]",
+#    "tox",
+#    "pre-commit",
+#    #"bump2version",
+#    "setuptools>=66.0",
+#    "wheel",
+#]
+#none = []
+#-------------------------------------------------------------------------------------------
+[project.scripts]
+
+#-------------------------------------------------------------------------------------------
+[project.urls]
+
+homepage        = "https://github.com/SteveDoyle2/cpylog/"
+issue_tracker   = "https://github.com/SteveDoyle2/cpylog/issues"
+documentation   = "https://github.com/SteveDoyle2/cpylog/"
+repository      = "https://github.com/SteveDoyle2/cpylog.git"
+
+#-------------------------------------------------------------------------------------------
+[build-system]
+requires = [
+    # main
+    "setuptools >= 66.0.0",
+    "setuptools_scm[toml]>=6.2",
+    "wheel<0.40",
+]
+build-backend = "setuptools.build_meta"
+#requires = ["setuptools>=61.0.0", "setuptools_scm[toml]>=6.2"]
+
+#-------------------------------------------------------------------------------------------
+# makes "pip wheel ." work
+# lets us create a wheel for distribution
+#
+[tool.distutils.bdist_wheel]
+universal = true
+
+#-------------------------------------------------------------------------------------------
+# https://github.com/sphinx-toolbox/sphinx-pyproject/blob/master/pyproject.toml
+[tool.setuptools]
+include-package-data = false
+#packages = ["cpylog"]
+
+[tool.setuptools.packages.find]
+# https://stackoverflow.com/questions/75387904/how-to-exclude-tests-folder-from-the-wheel-of-a-pyproject-toml-managed-lib
+# don't include pdfs/dat files in the wheel
+#find = {}
+#where
+include = ["cpylog*"]
+#include = ["pkg*"]
+
+exclude = [
+]
+
+#-------------------------------------------------------------------------------------------
+
+#[tool.setuptools_scm]

@@ -1,7 +1,7 @@
 # coding: utf-8
 import sys
 import os
-from typing import Optional, Tuple
+from typing import Optional
 from pathlib import Path
 
 def ipython_info() -> Optional[str]:
@@ -70,7 +70,7 @@ def get_default_session() -> Optional[str]:
         proc = proc.parent()
     return return_name
 
-def properties(nframe: int=3) -> Tuple[int, str]:
+def properties(nframe: int=3) -> tuple[int, str]:
     """
     Gets frame information
 
@@ -92,18 +92,20 @@ def properties(nframe: int=3) -> Tuple[int, str]:
     # helpful for seeing what's happening
     #for iframe in [0, 1, 2, 3, 4, 5]:
         #frame = sys._getframe(iframe)
-        #active_file = os.path.basename(frame.f_globals['__file__'])
+        #frame_file = get_frame_file_from_frame(frame)
+        #active_file = os.path.basename(frame_file)
         #star = '*' if iframe == nframe else ''
         #print(f'{star}{iframe}: {frame} active_file={active_file}')
 
     # jump to get out of the logger code
     frame = sys._getframe(nframe)
-    active_file = os.path.basename(frame.f_globals['__file__'])
+    frame_file = get_frame_file_from_frame(frame)
+    active_file = os.path.basename(frame_file)
     if active_file.endswith('.pyc'):
         return frame.f_lineno, active_file[:-1]
     return frame.f_lineno, active_file
 
-def properties2(nframe: int=3, dframe: int=0) -> Tuple[int, str]:
+def properties2(nframe: int=3, dframe: int=0) -> tuple[int, str]:
     """
     Gets frame information
 
@@ -125,7 +127,8 @@ def properties2(nframe: int=3, dframe: int=0) -> Tuple[int, str]:
     """
     fnamesi = []
     frame = sys._getframe(nframe)
-    active_file = os.path.abspath(frame.f_globals['__file__'])
+    frame_file = get_frame_file_from_frame(frame)
+    active_file = os.path.abspath(frame_file)
     base_file = os.path.basename(active_file)
     dirname = os.path.dirname(active_file)
 
@@ -139,3 +142,23 @@ def properties2(nframe: int=3, dframe: int=0) -> Tuple[int, str]:
     fnamesi.append(base_file[:-1] if base_file.endswith('.pyc')
                    else base_file)
     return frame.f_lineno, '/'.join(fnamesi)
+
+
+def get_frame_file_from_frame(frame) -> str:
+    """
+    Gets the active filename from a frame
+
+    Stock python uses __file__
+    Jupyter notebook uses __session__ because reasons
+    """
+    try:
+        frame_file = frame.f_globals['__file__']
+    except KeyError:
+        if '__session__' in frame.f_globals:
+            frame_file = frame.f_globals['__session__']
+        else:
+            raise
+        # for key, value in frame.f_globals.items():
+        #     print(f'{key}:  {value}\n')
+        # raise
+    return frame_file
