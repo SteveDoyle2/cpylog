@@ -93,11 +93,17 @@ log_base = SimpleLogger(self, level: str='debug', encoding: str='utf-8', log_fun
 def log_func(typ, filename, n, msg):
     print('typ=%r filename=%r n=%r msg=%r' % (typ, filename, n, msg))
 log_func = SimpleLogger(level='info', log_func=log_func)
+```
 
-[![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest)        [![Linux Status]```
+
+<!---
+[![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest)
+--->
 
 **Main/dev** 
-(https://github.com/SteveDoyle2/cpylog/workflows/CI/badge.svg)](https://github.com/SteveDoyle2/cpylog/actions?query=workflow%3ACI+branch%3Amaster) 
+
+[![Linux Status](https://github.com/SteveDoyle2/cpylog/workflows/CI/badge.svg)](https://github.com/SteveDoyle2/cpylog/actions?query=workflow%3ACI+branch%3Amaster) 
+
 [![Coverage Status](https://codecov.io/github/SteveDoyle2/cpylog/coverage.svg?branch=master)](https://codecov.io/gh/SteveDoyle2/cpylog)
 
 <!---
