@@ -3,7 +3,7 @@
 import sys
 import os
 import traceback
-from typing import Union, Optional
+from typing import Optional
 from cpylog.utils import (
     ipython_info, properties, properties2,
     get_frame_file_from_frame)  # get_default_session
@@ -343,34 +343,8 @@ def properties(nframe=3):
 
 def get_logger(log: Optional[SimpleLogger]=None,
                level: str='debug',
-               encoding: str='utf-8') -> SimpleLogger:
-    """
-    This function is useful as it will instantiate a simpleLogger object
-    if log=None.
-
-    Parameters
-    ----------
-    log: log / None
-         a logger object or None
-    level : str
-        level of logging: 'info' or 'debug'
-    encoding : str; default='utf-8'
-        the unicode encoding method
-
-    Returns
-    -------
-    log : SimpleLogger
-        a logger object
-
-    """
-    assert not isinstance(log, str), log
-    return SimpleLogger(level, encoding=encoding) if log is None else log
-
-
-def get_logger2(log=None,
-                debug: Union[str, bool]=True,
-                encoding='utf-8',
-                nlevels: int=1) -> SimpleLogger:
+               encoding: str='utf-8',
+               nlevels: int=1) -> SimpleLogger:
     """
     This function is useful as it will instantiate a SimpleLogger object
     if log=None.
@@ -381,7 +355,7 @@ def get_logger2(log=None,
         a python logging module object;
         if log is set, debug is ignored and uses the
         settings the logging object has
-    debug : str / bool / None; default=True
+    level : str / bool / None; default=True
        used to set the logger if no logger is passed in
            True:  logs debug/info/warning/error messages ('debug' level)
            False: logs info/warning/error messages ('info' level)
@@ -400,13 +374,25 @@ def get_logger2(log=None,
     """
     if log is not None:
         pass
-    elif debug is None:
-        log = SimpleLogger('warning', encoding=encoding, nlevels=nlevels)
-    elif isinstance(debug, str):
-        log = SimpleLogger(level, encoding=encoding, nlevels=nlevels)
+    elif isinstance(level, str):
+        log = SimpleLogger(level=level, encoding=encoding, nlevels=nlevels)
+    elif level is None:
+        log = SimpleLogger(level='warning', encoding=encoding, nlevels=nlevels)
     else:
-        level = 'debug' if debug else 'info'
-        log = SimpleLogger(level, encoding=encoding, nlevels=nlevels)
+        assert isinstance(level, bool), 'level must be True/False/None or debug/info/warning/error/critical'
+        level_str = 'debug' if level else 'info'
+        log = SimpleLogger(level=level_str, encoding=encoding, nlevels=nlevels)
+    return log
+
+
+def get_logger2(log: Optional[SimpleLogger]=None,
+                debug: Optional[str | bool]=True,
+                encoding: str='utf-8',
+                nlevels: int=1) -> SimpleLogger:
+    """see get_logger"""
+    log = get_logger(
+        log=log, level=debug,
+        encoding=encoding, nlevels=nlevels)
     return log
 
 
