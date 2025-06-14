@@ -38,7 +38,8 @@ jobs:
     strategy:
       matrix:
          #python-version: [3.9]  # testing
-         python-version: [3.7, 3.8, 3.9]   # TODO: should be enabled...disabled for testing...
+         # TODO: should be enabled...disabled for testing...
+         python-version: ['3.10', '3.11', '3.12', '3.13']
          os: [windows-latest]
          # , macos-latest, windows-latest
          mode: ['latest', 'latest_colorama'] # , 'windows-latest_colorama'
@@ -48,7 +49,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Print environment variables exposed by GitHub
         run: |
@@ -87,7 +88,8 @@ jobs:
       - name: Install dependencies
         run: |
          pip install codecov
-         python setup.py develop
+         pip install -e .
+         #python setup.py develop
 
       - name: List dependencies
         run: |
