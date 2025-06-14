@@ -5,13 +5,16 @@ A simple pure python colorama/HTML capable logger
 Download the latest:  [![PyPi Version](https://img.shields.io/pypi/v/cpylog.svg)](https://pypi.python.org/pypi/cpylog) 
 
 
-This is a library for creating a limited pure Python (3.7+) version of the standard logging object.  There are 3 main classes:
+This is a library for creating a limited pure Python (3.10+) version of the standard logging object.  There are 3 main classes:
  - ``SimpleLogger``
- - ``FileLogger`` (new in v1.1)
- - ``WarningRedirector`` (new in v1.3)
+ - ``FileLogger``
+ - ``WarningRedirector``
 
 And a few functions:
  - ``get_logger``
+   - v1.6 adds functionality of ``get_logger2``
+ - ``get_logger2`` (will be removed in v1.7)
+   - more general method in <v1.6 (same in v1.6)
  - ``log_exc`` (new in v1.5)
 
 ``SimpleLogger`` is **limited** in that:
@@ -20,13 +23,14 @@ And a few functions:
 The **additional** features that the ``SimpleLogger`` has:
  - support for colorama highlighting
    - automatically disabled when piping to a file
-   - automatically disabled in Spyder (new in v1.2)
+   - automatically disabled in Spyder
  - HTML support for the Jupyter notebook
    - automatically enabled
+   - v1.6 adds modern ipython support
  - overwritable log functions in order to integrate the log with a GUI
 
 The **additional** features that the ``FileLogger`` has beyond ``SimpleLogger``:
- - file writing and/or stream writing  (new in v1.1)
+ - file writing and/or stream writing
    - set_enabled / enable / disable logger
    - context manager to close file
      ```python
@@ -46,7 +50,7 @@ The WarningRedirector works as a context manager with both the ``FileLogger`` ha
      with WarningRedirector(log) as warn:
          warnings.warn('this goes to cpylog')
      ```
-   -using the ``FileLogger``:
+   - using the ``FileLogger``:
      ```python
      with FileLogger(level='debug', filename=None, include_stream=True) as log:
         warnings.warn('this goes to stderr')
@@ -89,10 +93,11 @@ log_base = SimpleLogger(self, level: str='debug', encoding: str='utf-8', log_fun
 def log_func(typ, filename, n, msg):
     print('typ=%r filename=%r n=%r msg=%r' % (typ, filename, n, msg))
 log_func = SimpleLogger(level='info', log_func=log_func)
-```
+
+[![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest)        [![Linux Status]```
 
 **Main/dev** 
-[![Documentation Status](https://readthedocs.org/projects/cpylog-git/badge/?version=latest)](http://cpylog-git.readthedocs.io/en/latest/?badge=latest)        [![Linux Status](https://github.com/SteveDoyle2/cpylog/workflows/CI/badge.svg)](https://github.com/SteveDoyle2/cpylog/actions?query=workflow%3ACI+branch%3Amaster) 
+(https://github.com/SteveDoyle2/cpylog/workflows/CI/badge.svg)](https://github.com/SteveDoyle2/cpylog/actions?query=workflow%3ACI+branch%3Amaster) 
 [![Coverage Status](https://codecov.io/github/SteveDoyle2/cpylog/coverage.svg?branch=master)](https://codecov.io/gh/SteveDoyle2/cpylog)
 
 <!---
