@@ -207,7 +207,8 @@ class SimpleLogger:
             type of a message (e.g. INFO)
 
         """
-        frame = sys._getframe(2)  # jump to get out of the logger code
+        # jump to get out of the logger code
+        frame = sys._getframe(2)
         lineno = frame.f_lineno
         frame_file = get_frame_file_from_frame(frame)
         filename = os.path.basename(frame_file)
@@ -313,7 +314,7 @@ class SimpleLogger:
         return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
 
 
-def properties(nframe=3):
+def properties(nframe: int=3) -> tuple[int, str]:
     """
     Gets frame information
 
@@ -342,7 +343,7 @@ def properties(nframe=3):
     return frame.f_lineno, active_file
 
 def get_logger(log: Optional[SimpleLogger]=None,
-               level: str='debug',
+               level: Optional[str | bool]='debug',
                encoding: str='utf-8',
                nlevels: int=1) -> SimpleLogger:
     """

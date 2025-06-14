@@ -19,21 +19,20 @@ COLORS = {
     'CRITICAL' : 'Crimson',
 }
 
-def str_to_html(log_type, filename, lineno, msg):
+def str_to_html(log_type: str, filename: str, lineno: int,
+                msg: str) -> str:
     """
     Converts the message to html
 
     Parameters
     ----------
-    color : str
-        the HTML color
     log_type : str
-        the message type
+        the message type (defines the HTML color)
     filename : str
         the filename the message came from
     lineno : int
         the line number the message came from
-    message : str
+    msg : str
         the message
 
     Returns
@@ -58,7 +57,8 @@ def str_to_html(log_type, filename, lineno, msg):
     html_msg = get_html_msg(color, tim, log_type, filename, lineno, msg)
     return html_msg
 
-def get_html_msg(color, tim, log_type, filename, lineno, msg):
+def get_html_msg(color: str, tim: str, log_type: str,
+                filename: str, lineno: int, msg: str) -> str:
     """
     converts the message to html
 
@@ -66,7 +66,7 @@ def get_html_msg(color, tim, log_type, filename, lineno, msg):
     ----------
     color : str
         the HTML color
-    time : str
+    tim : str
         the time for the message
     log_type : str
         the message type
@@ -74,7 +74,7 @@ def get_html_msg(color, tim, log_type, filename, lineno, msg):
         the filename the message came from
     lineno : int
         the line number the message came from
-    message : str
+    msg : str
         the message
 
     Returns

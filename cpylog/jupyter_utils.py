@@ -10,7 +10,8 @@ WARNING_TO_COLOR_MAP = {
     'CRITICAL' : 'red',
 }
 
-def write_html(typ: str, name: str, msg: str, encoding: str) -> None:
+def write_html(typ: str, name: str, msg: str,
+               encoding: str) -> None:
     """
     per:
      - https://stackoverflow.com/questions/16816013/is-it-possible-to-print-using-different-color-in-ipythons-notebook

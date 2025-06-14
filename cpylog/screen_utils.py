@@ -2,7 +2,8 @@ import sys
 #import time
 
 
-def write_screen(typ: str, name: str, msg: str, encoding: str) -> None:
+def write_screen(typ: str, name: str, msg: str,
+                 encoding: str) -> None:
     """writing to the screen"""
     #timestring = '%s  ' % time.strftime('%H:%M:%S', time.localtime())
     # max length of 'INFO', 'DEBUG', 'WARNING', etc.
