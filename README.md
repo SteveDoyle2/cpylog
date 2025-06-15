@@ -81,6 +81,7 @@ CRITICAL:  file.py:8  critical
 
 # debug: True=debug, False=info, None=warning
 log2 = get_logger2(log=log1, debug=True, encoding='utf-8')
+```
 
 ``SimpleLogger`` is the base class and if we call it directly, we can overwrite the logging message style.
 
