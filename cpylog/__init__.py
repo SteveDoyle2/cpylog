@@ -9,7 +9,7 @@ from cpylog.utils import (
     get_frame_file_from_frame)  # get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.6.0'  # 1.5.0 is latest released
+__version__ = '1.6.0'  # 1.6.0 is latest released
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
