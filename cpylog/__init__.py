@@ -393,12 +393,12 @@ def get_logger2(log: Optional[SimpleLogger]=None,
                 encoding: str='utf-8',
                 nlevels: int=1) -> SimpleLogger:
     """see get_logger"""
-    warnings.warn('get_logger2 was deprecated in cpylog 1.6.1 '
-                  'and will be removed in 1.7.0\n'
-                  'replace debug with level')
     log = get_logger(
         log=log, level=debug,
         encoding=encoding, nlevels=nlevels)
+    log.warning('get_logger2 was deprecated in cpylog 1.6.1 '
+                'and will be removed in 1.7.0\n'
+                'replace debug with level')
     return log
 
 
