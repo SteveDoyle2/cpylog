@@ -374,8 +374,10 @@ def get_logger(log: Optional[SimpleLogger]=None,
 
     """
     if log is not None:
-        pass
-    elif isinstance(level, str):
+        # if not isinstance(log, (str, bool)):
+        return log
+
+    if isinstance(level, str):
         log = SimpleLogger(level=level, encoding=encoding, nlevels=nlevels)
     elif level is None:
         log = SimpleLogger(level='warning', encoding=encoding, nlevels=nlevels)
@@ -391,6 +393,9 @@ def get_logger2(log: Optional[SimpleLogger]=None,
                 encoding: str='utf-8',
                 nlevels: int=1) -> SimpleLogger:
     """see get_logger"""
+    warnings.warn('get_logger2 was deprecated in cpylog 1.6.1 '
+                  'and will be removed in 1.7.0\n'
+                  'replace debug with level')
     log = get_logger(
         log=log, level=debug,
         encoding=encoding, nlevels=nlevels)
