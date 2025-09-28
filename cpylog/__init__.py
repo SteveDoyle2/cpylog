@@ -25,8 +25,15 @@ if hasattr(sys.stdout, 'isatty'):  # pyInstaller <= 3.1 doesn't have this
     IS_TERMINAL = sys.stdout.isatty()
 
 USE_HTML = ipython_info() is not None
-USE_COLORAMA = IS_TERMINAL and not USE_HTML
 
+# 2024.1.2
+# PYCHARM_DISPLAY_PORT 63342
+# PYCHARM_HOSTED 1
+# PYCHARM_INTERACTIVE_PLOTS 1
+# PYTHONIOENCODING UTF-8
+IS_PYCHARM = os.getenv("PYCHARM_HOSTED") != None
+
+USE_COLORAMA = IS_PYCHARM or IS_TERMINAL and not USE_HTML
 if USE_COLORAMA:
     # You're running in a real terminal
     try:
@@ -35,7 +42,7 @@ if USE_COLORAMA:
         IS_COLORAMA = True
     except ImportError:
         IS_COLORAMA = False
-    USE_COLORAMA = IS_COLORAMA and IS_TERMINAL and not USE_HTML
+    USE_COLORAMA = IS_COLORAMA and (IS_PYCHARM or IS_TERMINAL and not USE_HTML)
 
 if USE_COLORAMA:
     from cpylog.colorama_utils import write_colorama as _write
