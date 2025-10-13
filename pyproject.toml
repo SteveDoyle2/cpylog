@@ -31,6 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
@@ -69,7 +70,7 @@ requires = [
     # main
     "setuptools >= 66.0.0",
     "setuptools_scm[toml]>=6.2",
-    "wheel<0.40",
+    "wheel",  # <0.40
 ]
 build-backend = "setuptools.build_meta"
 #requires = ["setuptools>=61.0.0", "setuptools_scm[toml]>=6.2"]
@@ -79,7 +80,7 @@ build-backend = "setuptools.build_meta"
 # lets us create a wheel for distribution
 #
 [tool.distutils.bdist_wheel]
-universal = true
+universal = false
 
 #-------------------------------------------------------------------------------------------
 # https://github.com/sphinx-toolbox/sphinx-pyproject/blob/master/pyproject.toml
