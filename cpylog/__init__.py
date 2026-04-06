@@ -33,7 +33,7 @@ USE_HTML = ipython_info() is not None
 # PYTHONIOENCODING UTF-8
 IS_PYCHARM = os.getenv("PYCHARM_HOSTED") != None
 
-USE_COLORAMA = IS_PYCHARM or IS_TERMINAL and not USE_HTML
+USE_COLORAMA = IS_PYCHARM or (IS_TERMINAL and not USE_HTML)
 if USE_COLORAMA:
     # You're running in a real terminal
     try:
@@ -42,7 +42,7 @@ if USE_COLORAMA:
         IS_COLORAMA = True
     except ImportError:
         IS_COLORAMA = False
-    USE_COLORAMA = IS_COLORAMA and (IS_PYCHARM or IS_TERMINAL and not USE_HTML)
+    USE_COLORAMA = IS_COLORAMA and (IS_PYCHARM or (IS_TERMINAL and not USE_HTML))
 
 if USE_COLORAMA:
     from cpylog.colorama_utils import write_colorama as _write
@@ -318,7 +318,7 @@ class SimpleLogger:
         #return True
 
     def __repr__(self):
-        return 'SimpleLogger(level=%r, encoding=%r)' % (self.level, self.encoding)
+        return f'SimpleLogger(level={self.level!r}, encoding={self.encoding!r})'
 
 
 def properties(nframe: int=3) -> tuple[int, str]:
