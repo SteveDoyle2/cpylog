@@ -5,7 +5,6 @@
 # some examples:
 #   https://github.com/ckan/ckan/blob/master/.github/workflows/publish-pypi.yml
 #   https://medium.com/@blackary/publishing-a-python-package-from-github-to-pypi-in-2024-a6fb8635d45d
-# 
 name: Publish to PyPI
 
 jobs:
@@ -20,11 +19,25 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-          verbose: true
+    - name: Print environment variables exposed by GitHub
+      run: |
+          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "GITHUB_REF=$GITHUB_REF"
+          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
+          echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
+          echo "GITHUB_RUN_ID=$GITHUB_RUN_ID"
+          echo "GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER"
+          echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
+          echo "GITHUB_ACTION=$GITHUB_ACTION"
+
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.12"
+
     - name: Install packages
       with:
         verbose: true
