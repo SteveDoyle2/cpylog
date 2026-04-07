@@ -1,0 +1,5 @@
+prune dev
+prune docs
+prune .git
+prune .github
+global-exclude *.egg-info

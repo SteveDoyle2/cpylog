@@ -19,37 +19,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Print environment variables exposed by GitHub
-      run: |
-          echo "GITHUB_ACTOR=$GITHUB_ACTOR"
-          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-          echo "GITHUB_SHA=$GITHUB_SHA"
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_HEAD_REF=$GITHUB_HEAD_REF"
-          echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
-          echo "GITHUB_EVENT_NAME=$GITHUB_EVENT_NAME"
-          echo "GITHUB_RUN_ID=$GITHUB_RUN_ID"
-          echo "GITHUB_RUN_NUMBER=$GITHUB_RUN_NUMBER"
-          echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
-          echo "GITHUB_ACTION=$GITHUB_ACTION"
 
     - name: Set up Python 3.12
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: "3.12"
 
-    - name: Install packages
-      with:
-        verbose: true
-      run: |
-        python -m pip install --upgrade pip
-        pip install twine
+    - name: Install build tools
+      run: pip install build
 
-    - name: Build a binary wheel and a source tarball
-      with:
-        verbose: true
-      run: >-
-        pip wheel --wheel-dir=./dist cpylog
+    - name: Build distributions
+      run: python -m build
 
-    #- name: Upload release to PyPI
-    #  uses: pypa/gh-action-pypi-publish@release/v1
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
