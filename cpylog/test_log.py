@@ -257,6 +257,106 @@ class TestWarningRedirector(unittest.TestCase):
         warnings.warn('default warn')
         self.assertIs(warnings.showwarning, warning_function)
 
+class TestLazyFormatting(unittest.TestCase):
+    """Tests for *args lazy formatting (lazy=True/False)."""
+
+    def test_args_formatting_when_logged(self):
+        """Verify %-format args produce the correct message when logged."""
+        messages = []
+        def capture(typ, filename, lineno, msg):
+            messages.append(msg)
+
+        log = SimpleLogger(level='debug', log_func=capture)
+        log.info('count=%d name=%s', 42, 'hello')
+        self.assertEqual(messages[-1], 'count=42 name=hello')
+
+        log.warning('pi=%.2f', 3.14159)
+        self.assertEqual(messages[-1], 'pi=3.14')
+
+        log.debug('%s %s %s', 'a', 'b', 'c')
+        self.assertEqual(messages[-1], 'a b c')
+
+        log.error('value=%r', [1, 2])
+        self.assertEqual(messages[-1], "value=[1, 2]")
+
+        log.critical('x=%d', 99)
+        self.assertEqual(messages[-1], 'x=99')
+
+        log.exception('err=%s code=%d', 'fail', 500)
+        self.assertEqual(messages[-1], 'err=fail code=500')
+
+    def test_no_args_unchanged(self):
+        """Verify plain string messages still work without args."""
+        messages = []
+        def capture(typ, filename, lineno, msg):
+            messages.append(msg)
+
+        log = SimpleLogger(level='debug', log_func=capture)
+        log.info('plain message')
+        self.assertEqual(messages[-1], 'plain message')
+
+    def test_lazy_true_skips_formatting_when_suppressed(self):
+        """With lazy=True, args are not formatted if the level suppresses the message."""
+        class Bomb:
+            def __str__(self):
+                raise RuntimeError('should not format')
+            def __repr__(self):
+                raise RuntimeError('should not format')
+
+        log = SimpleLogger(level='warning', lazy=True)
+        # debug and info are suppressed — Bomb.__str__ must not be called
+        log.debug('value=%s', Bomb())
+        log.info('value=%s', Bomb())
+
+    def test_lazy_false_formats_eagerly_even_when_suppressed(self):
+        """With lazy=False (default), bad format args raise even if message is suppressed."""
+        log = SimpleLogger(level='warning', lazy=False)
+        with self.assertRaises(TypeError):
+            log.debug('bad=%d', 'not_a_number')
+        with self.assertRaises(TypeError):
+            log.info('bad=%d', 'not_a_number')
+
+    def test_lazy_true_formats_when_logged(self):
+        """With lazy=True, args are still formatted when the message passes the level check."""
+        messages = []
+        def capture(typ, filename, lineno, msg):
+            messages.append(msg)
+
+        log = SimpleLogger(level='debug', lazy=True, log_func=capture)
+        log.info('n=%d', 7)
+        self.assertEqual(messages[-1], 'n=7')
+
+    def test_lazy_flag_default_is_false(self):
+        """The default lazy value is False."""
+        log = SimpleLogger(level='debug')
+        self.assertFalse(log.lazy)
+
+    def test_get_logger_passes_lazy(self):
+        """get_logger propagates the lazy parameter."""
+        log = get_logger(level='debug', lazy=True)
+        self.assertTrue(log.lazy)
+
+        log2 = get_logger(level='info', lazy=False)
+        self.assertFalse(log2.lazy)
+
+    def test_file_logger_lazy(self):
+        """FileLogger accepts and uses the lazy parameter."""
+        filename = os.path.join(dirname, 'file_logger_lazy.log')
+        _remove_file(filename)
+
+        class Bomb:
+            def __str__(self):
+                raise RuntimeError('should not format')
+
+        with FileLogger(level='warning', filename=filename, lazy=True) as log:
+            # suppressed — should not format
+            log.debug('val=%s', Bomb())
+            log.info('val=%s', Bomb())
+            # logged — should format
+            log.warning('x=%d', 5)
+        _remove_file(filename)
+
+
 def _remove_file(filename):
     if os.path.exists(filename):
         os.remove(filename)

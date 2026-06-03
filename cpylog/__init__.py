@@ -73,7 +73,8 @@ class SimpleLogger:
 
     """
     def __init__(self, level: str='debug', encoding: str='utf-8',
-                 nlevels: int=1, log_func=None) -> None:
+                 nlevels: int=1, log_func=None,
+                 lazy: bool=False) -> None:
         """
         Creates a SimpleLogger
 
@@ -95,6 +96,10 @@ class SimpleLogger:
                 the line number corresponding to the filename
             msg: str
                 the message to log
+        lazy : bool; default=False
+            if True, %-format args passed to info/debug/etc. are only
+            applied when the message will actually be logged (deferred
+            formatting). If False, args are formatted immediately.
 
         Example
         -------
@@ -119,6 +124,7 @@ class SimpleLogger:
         self.log_func = log_func
         self.encoding = encoding
         self._nlevels = nlevels
+        self.lazy = lazy
         assert nlevels >= 1, nlevels
 
         # log may be enabled/disabled (useful for multiprocessing)
@@ -223,89 +229,125 @@ class SimpleLogger:
         assert msg is not None, msg
         self.log_func(typ, filename, lineno, msg)
 
-    def debug(self, msg: str) -> None:
+    def debug(self, msg: str, *args) -> None:
         """
         Log DEBUG message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
+        if args:
+            if self.lazy:
+                if self.level != 'debug':
+                    return
+            msg = msg % args
         if self.level != 'debug':
             return
         self.msg_typ('DEBUG', msg)
 
-    def info(self, msg: str) -> None:
+    def info(self, msg: str, *args) -> None:
         """
         Log INFO message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
+        if args:
+            if self.lazy:
+                if self.level not in ('debug', 'info'):
+                    return
+            msg = msg % args
         if self.level not in ('debug', 'info'):
             return
         assert msg is not None, msg
         self.msg_typ('INFO', msg)
 
-    def warning(self, msg: str) -> None:
+    def warning(self, msg: str, *args) -> None:
         """
         Log WARNING message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
+        if args:
+            if self.lazy:
+                if self.level in {'error', 'critical'}:
+                    return
+            msg = msg % args
         if self.level in {'error', 'critical'}:
             return
         assert msg is not None, msg
         self.msg_typ('WARNING', msg)
 
-    def error(self, msg: str) -> None:
+    def error(self, msg: str, *args) -> None:
         """
         Log ERROR message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
+        if args:
+            if self.lazy:
+                if self.level in {'error', 'critical'}:
+                    return
+            msg = msg % args
         if self.level in {'error', 'critical'}:
             return
         assert msg is not None, msg
         self.msg_typ('ERROR', msg)
 
-    def exception(self, msg: str) -> None:
+    def exception(self, msg: str, *args) -> None:
         """
         Log EXCEPTION message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
         assert msg is not None, msg
+        if args:
+            msg = msg % args
         self.msg_typ('EXCEPTION', msg)
 
-    def critical(self, msg: str) -> None:
+    def critical(self, msg: str, *args) -> None:
         """
         Log CRITICAL message
 
         Parameters
         ----------
         msg : str
-            message to be logged
+            message to be logged (may contain %-format placeholders)
+        *args
+            format arguments; if lazy=True, applied only when logged
 
         """
         assert msg is not None, msg
+        if args:
+            msg = msg % args
         self.msg_typ('CRITICAL', msg)
 
     #def __enter__(self):
@@ -352,7 +394,8 @@ def properties(nframe: int=3) -> tuple[int, str]:
 def get_logger(log: Optional[SimpleLogger]=None,
                level: Optional[str | bool]='debug',
                encoding: str='utf-8',
-               nlevels: int=1) -> SimpleLogger:
+               nlevels: int=1,
+               lazy: bool=False) -> SimpleLogger:
     """
     This function is useful as it will instantiate a SimpleLogger object
     if log=None.
@@ -373,6 +416,8 @@ def get_logger(log: Optional[SimpleLogger]=None,
         the unicode encoding method
     nlevels : int; default=1
         the number of levels to show
+    lazy : bool; default=False
+        if True, %-format args are only applied when the message is logged
 
     Returns
     -------
@@ -385,13 +430,13 @@ def get_logger(log: Optional[SimpleLogger]=None,
         return log
 
     if isinstance(level, str):
-        log = SimpleLogger(level=level, encoding=encoding, nlevels=nlevels)
+        log = SimpleLogger(level=level, encoding=encoding, nlevels=nlevels, lazy=lazy)
     elif level is None:
-        log = SimpleLogger(level='warning', encoding=encoding, nlevels=nlevels)
+        log = SimpleLogger(level='warning', encoding=encoding, nlevels=nlevels, lazy=lazy)
     else:
         assert isinstance(level, bool), 'level must be True/False/None or debug/info/warning/error/critical'
         level_str = 'debug' if level else 'info'
-        log = SimpleLogger(level=level_str, encoding=encoding, nlevels=nlevels)
+        log = SimpleLogger(level=level_str, encoding=encoding, nlevels=nlevels, lazy=lazy)
     return log
 
 
@@ -415,7 +460,8 @@ class FileLogger(SimpleLogger):
                  filename: Optional[str]=None,
                  mode: str='w',
                  include_stream: bool=True,
-                 log_func=None):
+                 log_func=None,
+                 lazy: bool=False):
         """
                 Parameters
         ----------
@@ -458,7 +504,7 @@ class FileLogger(SimpleLogger):
 
         """
         SimpleLogger.__init__(self, level=level, encoding=encoding,
-                              nlevels=nlevels, log_func=None)
+                              nlevels=nlevels, log_func=None, lazy=lazy)
 
         self.include_stream = include_stream
         self.loggers = []
