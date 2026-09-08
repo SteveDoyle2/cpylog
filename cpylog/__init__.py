@@ -9,7 +9,7 @@ from cpylog.utils import (
     get_frame_file_from_frame)  # get_default_session
 from cpylog.warning_redirector import WarningRedirector
 
-__version__ = '1.6.1'  # 1.6.1 is latest released
+__version__ = '1.7.0'  # 1.6.0 is latest released
 __desc__ = 'cpylog'
 __long__ = __desc__
 __website__ = 'https://github.com/cpylog/cpylog'
@@ -31,7 +31,7 @@ USE_HTML = ipython_info() is not None
 # PYCHARM_HOSTED 1
 # PYCHARM_INTERACTIVE_PLOTS 1
 # PYTHONIOENCODING UTF-8
-IS_PYCHARM = os.getenv("PYCHARM_HOSTED") != None
+IS_PYCHARM = os.getenv("PYCHARM_HOSTED") is not None
 
 USE_COLORAMA = IS_PYCHARM or (IS_TERMINAL and not USE_HTML)
 if USE_COLORAMA:
@@ -103,8 +103,7 @@ class SimpleLogger:
 
         Example
         -------
-        >>> log1 = SimpleLogger(level='debug', encoding='utf-8',
-                                log_func=None)
+        >>> log1 = SimpleLogger(level='debug', encoding='utf-8')
         >>> log1.info('info message')
         INFO:  cpylog.py:100   info message
 
