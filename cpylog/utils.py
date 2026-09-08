@@ -13,7 +13,7 @@ def ipython_info() -> Optional[str]:
 
         # Spyder doesn't support HTML objects.
         # Check for spyder in order to fall back on Colorama
-        if 'SPY_PYTHONPATH' in os.environ:
+        if ipython.__class__.__name__ == "SpyderShell":
             return None
         return ipython
     except NameError:
