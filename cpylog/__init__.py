@@ -263,6 +263,8 @@ class SimpleLogger:
             return ''
         if args:
             msg = msg % args
+        if 'debug' not in write_levels:
+            return msg
         assert msg is not None, msg
         return self.msg_typ('DEBUG', msg)
 
@@ -283,7 +285,7 @@ class SimpleLogger:
             return ''
         if args:
             msg = msg % args
-        if self.level not in write_levels:
+        if 'info' not in write_levels:
             return msg
         assert msg is not None, msg
         return self.msg_typ('INFO', msg)
@@ -302,10 +304,10 @@ class SimpleLogger:
         """
         write_levels = WRITE_LEVELS_MAP[self.level]
         if self.lazy and 'warning' not in write_levels:
-            return
+            return ''
         if args:
             msg = msg % args
-        if self.level not in write_levels:
+        if 'warning' not in write_levels:
             return msg
         assert msg is not None, msg
         return self.msg_typ('WARNING', msg)
@@ -327,7 +329,7 @@ class SimpleLogger:
             return ''
         if args:
             msg = msg % args
-        if self.level not in write_levels:
+        if 'error' not in write_levels:
             return msg
         assert msg is not None, msg
         return self.msg_typ('ERROR', msg)
@@ -379,34 +381,6 @@ class SimpleLogger:
     def __repr__(self) -> str:
         return f'SimpleLogger(level={self.level!r}, encoding={self.encoding!r})'
 
-
-def properties(nframe: int=3) -> tuple[int, str]:
-    """
-    Gets frame information
-
-    Parameters
-    ----------
-    nframe : int; default=3
-        the number of frames to jump back
-        0 = current
-        2 = calling from an embedded function (e.g., log_msg)
-        3 = calling from an embedded class (e.g., SimpleLogger)
-
-    Returns
-    -------
-    line number : int
-        the line number of the nth frame
-    filename : str
-        the filen ame of the nth frame
-
-    """
-    # jump to get out of the logger code
-    frame = sys._getframe(nframe)
-    frame_file = get_frame_file_from_frame(frame)
-    active_file = os.path.basename(frame_file)
-    if active_file.endswith('.pyc'):
-        return frame.f_lineno, active_file[:-1]
-    return frame.f_lineno, active_file
 
 def get_logger(log: Optional[SimpleLogger]=None,
                level: Optional[str | bool]='debug',
@@ -521,7 +495,7 @@ class FileLogger(SimpleLogger):
 
         """
         SimpleLogger.__init__(self, level=level, encoding=encoding,
-                              nlevels=nlevels, log_func=None, lazy=lazy)
+                              nlevels=nlevels, log_func=log_func, lazy=lazy)
 
         self.include_stream = include_stream
         self.loggers = []
@@ -567,7 +541,7 @@ class FileLogger(SimpleLogger):
             self._file.close()
         #print(f'cleanup {self._filename}')
 
-    def msg_typ_file(self, typ: str, msg: str) -> None:
+    def msg_typ_file(self, typ: str, msg: str) -> str:
         """
         Log message of a given type
 
@@ -582,6 +556,7 @@ class FileLogger(SimpleLogger):
         lineno, filename = properties()
         for log_func in self.loggers:
             log_func(typ, filename, lineno, msg)
+        return ''
 
     def file_logging(self, typ: str, filename: str, lineno: int, msg: str) -> str:
         """
