@@ -3,7 +3,7 @@ import sys
 
 
 def write_screen(typ: str, name: str, msg: str,
-                 encoding: str) -> None:
+                 encoding: str) -> str:
     """writing to the screen"""
     #timestring = '%s  ' % time.strftime('%H:%M:%S', time.localtime())
     # max length of 'INFO', 'DEBUG', 'WARNING', etc.
@@ -16,4 +16,6 @@ def write_screen(typ: str, name: str, msg: str,
     #if 'Creating an ndarray from ragged nested sequences' in msg:
         #asdf
 
-    sys.stdout.write((name + msg) if typ else msg)
+    msgi = (name + msg) if typ else msg
+    sys.stdout.write(msgi)
+    return msgi

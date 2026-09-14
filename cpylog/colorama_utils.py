@@ -19,13 +19,15 @@ def write_error(msg: str) -> None:
     sys.stdout.write(RED + msg)
 
 
-def write_colorama(typ: str, name: str, msg: str, encoding: str) -> None:
+def write_colorama(typ: str, name: str, msg: str, encoding: str) -> str:
     """if we're writing to the screen"""
     try:
-        _write_colorama_screen(typ, name + msg)
+        return _write_colorama_screen(typ, name + msg)
     except IOError:
         sys.stdout.write(f'error writing line...encoding={encoding!r}\n')
         sys.stdout.write(msg)
+        return ''
+    raise TypeError((typ, name, msg))
 
 
 def _write_colorama_screen(typ: str, msg: str) -> None:
@@ -61,3 +63,5 @@ def _write_colorama_screen(typ: str, msg: str) -> None:
         sys.stdout.write(YELLOW + msg)
     else: # error / other
         sys.stdout.write(RED + msg)
+    assert isinstance(msg, str), msg
+    return msg

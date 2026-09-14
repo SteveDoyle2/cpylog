@@ -54,7 +54,8 @@ def str_to_html(log_type: str, filename: str, lineno: int,
 
     if filename.endswith('.pyc'):
         filename = filename[:-1]
-    html_msg = get_html_msg(color, tim, log_type, filename, lineno, msg)
+    html_msg = get_html_msg(
+        color, tim, log_type, filename, lineno, msg)
     return html_msg
 
 def get_html_msg(color: str, tim: str, log_type: str,
@@ -83,6 +84,6 @@ def get_html_msg(color: str, tim: str, log_type: str,
         the HTML message
     """
     # log_type, filename, lineno, msg
-    html_msg = r'<font color="%s"> %s %s : %s:%i</font> %s <br>' % (
-        color, tim, log_type, filename, lineno, msg.replace('\n', '<br>'))
+    msg2 = msg.replace('\n', '<br>')
+    html_msg = fr'<font color="{color}"> {tim} {log_type} : {filename}:{lineno:d}</font> {msg2} <br>'
     return html_msg

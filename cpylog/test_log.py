@@ -152,8 +152,8 @@ class TestLog(unittest.TestCase):
         log.debug('debug')
         log.exception('exception')
         out = log.critical('critical')
-        assert out is None
-
+        assert 'critical' in out
+        
     def test_simple_logger_log_func(self):
         """tests using a log function"""
         def log_func(typ, filename, lineno, msg):
@@ -161,6 +161,7 @@ class TestLog(unittest.TestCase):
             str_to_html(typ, filename, lineno, msg)
             assert typ == 'INFO', '%r' % msg
             assert msg == 'info_log_func', '%r' % msg
+            return msg
         log = SimpleLogger(level='info', log_func=log_func)
         log.info('info_log_func')
 
@@ -183,11 +184,11 @@ class TestLog(unittest.TestCase):
         """tests using get_logger2"""
         log1 = get_logger2(debug=True)
         log1.info('info')
-        log1.warning('warning')
-        log1.error('error')
-        log1.debug('debug')
-        log1.exception('exception')
-        log1.critical('critical')
+        assert 'warning' in log1.warning('warning')
+        assert 'error' in log1.error('error')
+        assert 'debug' in log1.debug('debug')
+        assert 'exception' in log1.exception('exception')
+        assert 'critical' in log1.critical('critical')
         log1.info('%r' % log1)
 
         log2 = get_logger2(debug=False)
@@ -265,6 +266,7 @@ class TestLazyFormatting(unittest.TestCase):
         messages = []
         def capture(typ, filename, lineno, msg):
             messages.append(msg)
+            return msg
 
         log = SimpleLogger(level='debug', log_func=capture)
         log.info('count=%d name=%s', 42, 'hello')
@@ -290,6 +292,7 @@ class TestLazyFormatting(unittest.TestCase):
         messages = []
         def capture(typ, filename, lineno, msg):
             messages.append(msg)
+            return msg
 
         log = SimpleLogger(level='debug', log_func=capture)
         log.info('plain message')
@@ -321,6 +324,7 @@ class TestLazyFormatting(unittest.TestCase):
         messages = []
         def capture(typ, filename, lineno, msg):
             messages.append(msg)
+            return msg
 
         log = SimpleLogger(level='debug', lazy=True, log_func=capture)
         log.info('n=%d', 7)

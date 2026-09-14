@@ -52,10 +52,19 @@ else:
     from cpylog.screen_utils import write_screen as _write
 
 
+WRITE_LEVELS_MAP = {
+    # a debug message writes for the following self.level
+    'debug': {'debug', 'info', 'warning', 'error', 'critical'},
+    'info': {'info', 'warning', 'error', 'critical'},
+    'warning': {'warning', 'error', 'critical'},
+    'error': {'error', 'critical'},
+    'critical': {'error', 'critical'},
+}
+
 class SimpleLogger:
     """
     Simple logger object. In future might be changed to use Python logging module.
-    Four levels are supported:
+    Five levels are supported:
       - 'debug'
       - 'info'
       - 'warning'
@@ -106,6 +115,8 @@ class SimpleLogger:
         >>> log1 = SimpleLogger(level='debug', encoding='utf-8')
         >>> log1.info('info message')
         INFO:  cpylog.py:100   info message
+        >>> log1.level = 'warning'
+        >>> log1.info('info message 2')
 
         def func(typ, filename, lineno, msg):
             print(msg)
@@ -149,7 +160,7 @@ class SimpleLogger:
         self._active = False
 
     def stdout_logging(self, typ: str, filename: str, lineno: int,
-                       msg: str) -> None:
+                       msg: str) -> str:
         """
         Default logging function. Takes a text and outputs to stdout.
 
@@ -170,8 +181,8 @@ class SimpleLogger:
         # max length of 'INFO', 'DEBUG', 'WARNING', etc.
         name = '%-8s' % (typ + ':')
         if isinstance(lineno, list):
-            filename_lineno = '/'.join([f'{filenamei}:{linenoi}'
-                                        for filenamei, linenoi in zip(filename, lineno)])
+            filename_lineno = '/'.join([
+                f'{filenamei}:{linenoi}' for filenamei, linenoi in zip(filename, lineno)])
         else:
             filename_lineno = f'{filename}:{lineno}'
         msg2 = self._level_filename_fmt % (filename_lineno, msg)
@@ -183,10 +194,12 @@ class SimpleLogger:
             #print(typ, filename, lineno, msg2, type(msg2))
             #raise
 
-        _write(typ, name, msg2, self.encoding)
+        msg_out = _write(typ, name, msg2, self.encoding)
+        assert isinstance(msg_out, str), (msg_out, _write)
         #sys.stdout.flush()
+        return msg_out
 
-    def msg_typ(self, typ: str, msg: str, nframe: int=3) -> None:
+    def msg_typ(self, typ: str, msg: str, nframe: int=3) -> str:
         """
         Log message of a given type
 
@@ -200,12 +213,18 @@ class SimpleLogger:
             the number of log levels to jump
             should be 3+
 
+        Returns
+        -------
+        out_msg : str
+            output message
         """
         if not self._active:
-            return
+            return ''
         lineno, filename = properties2(nframe=nframe, dframe=self._nlevels-1)
-        self.log_func(typ, filename, lineno, msg)
+        msg_out = self.log_func(typ, filename, lineno, msg)
         #self.log_func(typ, '   fname=%-25s lineNo=%-4s   %s\n' % (fn, lineno, msg))
+        assert isinstance(msg_out, str), (msg_out, _write, self.log_func)
+        return msg_out
 
     def simple_msg(self, msg: str, typ: Optional[str]=None) -> None:
         """
@@ -224,11 +243,10 @@ class SimpleLogger:
         lineno = frame.f_lineno
         frame_file = get_frame_file_from_frame(frame)
         filename = os.path.basename(frame_file)
-
         assert msg is not None, msg
         self.log_func(typ, filename, lineno, msg)
 
-    def debug(self, msg: str, *args) -> None:
+    def debug(self, msg: str, *args) -> str:
         """
         Log DEBUG message
 
@@ -240,16 +258,15 @@ class SimpleLogger:
             format arguments; if lazy=True, applied only when logged
 
         """
+        write_levels = WRITE_LEVELS_MAP[self.level]
+        if self.lazy and 'debug' not in write_levels:
+            return ''
         if args:
-            if self.lazy:
-                if self.level != 'debug':
-                    return
             msg = msg % args
-        if self.level != 'debug':
-            return
-        self.msg_typ('DEBUG', msg)
+        assert msg is not None, msg
+        return self.msg_typ('DEBUG', msg)
 
-    def info(self, msg: str, *args) -> None:
+    def info(self, msg: str, *args) -> str:
         """
         Log INFO message
 
@@ -261,17 +278,17 @@ class SimpleLogger:
             format arguments; if lazy=True, applied only when logged
 
         """
+        write_levels = WRITE_LEVELS_MAP[self.level]
+        if self.lazy and 'info' not in write_levels:
+            return ''
         if args:
-            if self.lazy:
-                if self.level not in ('debug', 'info'):
-                    return
             msg = msg % args
-        if self.level not in ('debug', 'info'):
-            return
+        if self.level not in write_levels:
+            return msg
         assert msg is not None, msg
-        self.msg_typ('INFO', msg)
+        return self.msg_typ('INFO', msg)
 
-    def warning(self, msg: str, *args) -> None:
+    def warning(self, msg: str, *args) -> str:
         """
         Log WARNING message
 
@@ -283,17 +300,17 @@ class SimpleLogger:
             format arguments; if lazy=True, applied only when logged
 
         """
-        if args:
-            if self.lazy:
-                if self.level in {'error', 'critical'}:
-                    return
-            msg = msg % args
-        if self.level in {'error', 'critical'}:
+        write_levels = WRITE_LEVELS_MAP[self.level]
+        if self.lazy and 'warning' not in write_levels:
             return
+        if args:
+            msg = msg % args
+        if self.level not in write_levels:
+            return msg
         assert msg is not None, msg
-        self.msg_typ('WARNING', msg)
+        return self.msg_typ('WARNING', msg)
 
-    def error(self, msg: str, *args) -> None:
+    def error(self, msg: str, *args) -> str:
         """
         Log ERROR message
 
@@ -305,17 +322,17 @@ class SimpleLogger:
             format arguments; if lazy=True, applied only when logged
 
         """
+        write_levels = WRITE_LEVELS_MAP[self.level]
+        if self.lazy and 'error' not in write_levels:
+            return ''
         if args:
-            if self.lazy:
-                if self.level in {'error', 'critical'}:
-                    return
             msg = msg % args
-        if self.level in {'error', 'critical'}:
-            return
+        if self.level not in write_levels:
+            return msg
         assert msg is not None, msg
-        self.msg_typ('ERROR', msg)
+        return self.msg_typ('ERROR', msg)
 
-    def exception(self, msg: str, *args) -> None:
+    def exception(self, msg: str, *args) -> str:
         """
         Log EXCEPTION message
 
@@ -327,12 +344,12 @@ class SimpleLogger:
             format arguments; if lazy=True, applied only when logged
 
         """
-        assert msg is not None, msg
         if args:
             msg = msg % args
-        self.msg_typ('EXCEPTION', msg)
+        assert msg is not None, msg
+        return self.msg_typ('EXCEPTION', msg)
 
-    def critical(self, msg: str, *args) -> None:
+    def critical(self, msg: str, *args) -> str:
         """
         Log CRITICAL message
 
@@ -347,7 +364,8 @@ class SimpleLogger:
         assert msg is not None, msg
         if args:
             msg = msg % args
-        self.msg_typ('CRITICAL', msg)
+        assert msg is not None, msg
+        return self.msg_typ('CRITICAL', msg)
 
     #def __enter__(self):
         #return self.file_obj
@@ -358,7 +376,7 @@ class SimpleLogger:
             #print("ending...")
         #return True
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'SimpleLogger(level={self.level!r}, encoding={self.encoding!r})'
 
 
@@ -447,8 +465,8 @@ def get_logger2(log: Optional[SimpleLogger]=None,
     log = get_logger(
         log=log, level=debug,
         encoding=encoding, nlevels=nlevels)
-    log.warning('get_logger2 was deprecated in cpylog 1.6.1 '
-                'and will be removed in 1.7.0\n'
+    log.warning('get_logger2 was deprecated in cpylog 1.7.0 '
+                'and will be removed in 1.8.0\n'
                 'replace debug with level')
     return log
 
@@ -565,7 +583,7 @@ class FileLogger(SimpleLogger):
         for log_func in self.loggers:
             log_func(typ, filename, lineno, msg)
 
-    def file_logging(self, typ: str, filename: str, lineno: int, msg: str) -> None:
+    def file_logging(self, typ: str, filename: str, lineno: int, msg: str) -> str:
         """
         Default logging function. Takes a text and outputs to stdout.
 
@@ -591,14 +609,16 @@ class FileLogger(SimpleLogger):
         #print('file name=%r msg=%r' % (name, msg))
         filename_lineno = f'{filename}:{lineno}'
         msg2 = self._level_filename_fmt % (filename_lineno, msg)
-        self._file.write((name + msg2) if typ else msg2)
+        msg3 = (name + msg2) if typ else msg2
+        self._file.write(msg3)
         self._file.flush()
+        return msg3
 
 def log_exc(log: SimpleLogger, limit=None, chain: bool=True):
     """Shorthand for 'log_exception(log, *sys.exc_info(), limit)'."""
     log_exception(log, *sys.exc_info(), limit=limit, chain=chain)
 
-def log_exception(log: SimpleLogger, etype, value, tb, limit=None, chain: bool=True):
+def log_exception(log: SimpleLogger, etype, value, tb, limit=None, chain: bool=True) -> None:
     """Print exception up to 'limit' stack trace entries from 'tb' to 'log'.
 
     This differs from print_tb() in the following ways:

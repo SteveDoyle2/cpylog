@@ -31,13 +31,15 @@ class WarningRedirector:
         """
         self._showwarning_old = warnings.showwarning
 
-        def warn(message: str, category, filename: str, lineno: str, file=None, line=None):
+        def warn(message: str, category, filename: str,
+                 lineno: str, file=None, line=None):
             #return self.log.log_function_handler('WARNING', os.path.basename(filename), lineno,
                                                  #message)
             #print(f'self.log.level = {self.log.level!r}')
             if self.log.level in {'debug', 'info', 'warning'}:
-                self.log.log_func('WARNING', os.path.basename(filename), lineno,
-                                  message)
+                self.log.log_func(
+                    'WARNING', os.path.basename(filename),
+                    lineno, message)
         warnings.showwarning = warn
 
     def __exit__(self, exc_type, exc_val, exc_tb):
